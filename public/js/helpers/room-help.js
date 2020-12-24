@@ -20,12 +20,14 @@ const populateData = async () => {
 };
 
 const handleBoardClick = async e => {
-  const room = await readRoom(id);
-  const spaceValue = Number(e.target.textContent);
-  const player = room.players.filter(player => player.username === localStorage.getItem('username'))[0];
-  const space = room.board.filter(space => space.value === spaceValue)[0];
+  if (document.querySelector('.turn-txt').textContent === 'Your turn') {
+    const room = await readRoom(id);
+    const spaceValue = Number(e.target.textContent);
+    const player = room.players.filter(player => player.username === localStorage.getItem('username'))[0];
+    const space = room.board.filter(space => space.value === spaceValue)[0];
 
-  socket.emit('play', space, player, room);
+    socket.emit('play', space, player, room);
+  }
 };
 
 const handleSitDown = async e => {
@@ -81,16 +83,18 @@ const updateTurnText = (turn, players) => {
 };
 
 const handleDraw = async () => {
-  const room = await readRoom(id);
-  const player = room.players.find(player => player.username === localStorage.getItem('username'));
+  if (document.querySelector('.turn-txt').textContent === 'Your turn') {
+    const room = await readRoom(id);
+    const player = room.players.find(player => player.username === localStorage.getItem('username'));
 
-  if (player.hand.length < 3) {
-    drawCard(room, player);
-    await updateRoom(id, room);
+    if (player.hand.length < 3) {
+      drawCard(room, player);
+      await updateRoom(id, room);
 
-    socket.emit('draw', player);
-  } else {
-    console.log('You already have 3 cards.');
+      socket.emit('draw', player);
+    } else {
+      console.log('You already have 3 cards.');
+    }
   }
 };
 

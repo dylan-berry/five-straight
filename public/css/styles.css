@@ -82,7 +82,8 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 100px);
   grid-gap: 10px;
-  margin: 20px;
+  margin: 0 auto;
+  max-width: 550px;
 }
 
 .card-cell {

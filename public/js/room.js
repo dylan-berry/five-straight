@@ -20,12 +20,22 @@ if (localStorage.getItem('username')) {
     <input class="username-input" type="text" name="username" />
     <button class="ok-btn">OK</button>
   `;
+
+  for (let btn of document.querySelectorAll('.sit-btn')) {
+    btn.disabled = true;
+  }
 }
 
 usernameForm.addEventListener('submit', e => {
   e.preventDefault();
   localStorage.setItem('username', document.querySelector('.username-input').value);
   usernameForm.innerHTML = `<h2>Welcome, ${localStorage.getItem('username')}</h2>`;
+
+  for (let btn of document.querySelectorAll('.sit-btn')) {
+    if (btn.textContent === 'Sit Down') {
+      btn.disabled = false;
+    }
+  }
 });
 
 // Click handlers
