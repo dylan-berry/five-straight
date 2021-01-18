@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.3",
     "mongoose": "^5.11.8",
+    "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "socket.io": "^3.0.4"
   },

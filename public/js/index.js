@@ -1,4 +1,4 @@
-import { listRooms, handleCreateRoom } from './helpers/index-help.js';
+import { listRooms, handleCreateRoom } from './modules/index-help.js';
 
 const createRoomBtn = document.querySelector('.create-room-btn');
 

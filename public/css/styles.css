@@ -6,6 +6,19 @@ body {
   font-family: Helvetica, sans-serif;
 }
 
+/* Navigation */
+nav {
+  display: grid;
+  justify-content: right;
+  padding: 0.25em;
+}
+
+nav > div:hover {
+  color: #111111;
+  cursor: pointer;
+}
+
+/* Homepage */
 .rooms-grid {
   display: flex;
   flex-wrap: wrap;
@@ -20,6 +33,29 @@ body {
 .room-grid {
   display: grid;
   margin: 0 auto;
+}
+
+/* Room page */
+.game-grid {
+  display: grid;
+  grid-template-areas:
+    'board chat'
+    'buttons buttons'
+    'cards cards';
+}
+
+.chat {
+  grid-area: chat;
+  text-align: left;
+  max-height: 550px;
+  overflow: scroll;
+}
+
+.chat-action {
+  font-size: 0.75em;
+  font-weight: normal;
+  font-style: italic;
+  margin: 0;
 }
 
 /* Buttons */
@@ -39,13 +75,18 @@ body {
   display: none;
 }
 
+.game-buttons {
+  grid-area: buttons;
+}
+
 /* Board */
 .game-board {
+  grid-area: board;
   max-width: 550px;
   color: #111111;
   display: flex;
   flex-wrap: wrap;
-  margin: 0 auto;
+  margin: 0 0 0 auto;
 }
 
 .cell {
@@ -77,8 +118,13 @@ body {
   cursor: not-allowed;
 }
 
+.last-played {
+  border: 3px solid #111111;
+}
+
 /* Cards */
 .cards-grid {
+  grid-area: cards;
   display: grid;
   grid-template-columns: repeat(3, 100px);
   grid-gap: 10px;
@@ -102,6 +148,17 @@ body {
   transform: translateY(-10px);
 }
 
+/* Text input */
+.username-input {
+  border: 1px solid #cccccc;
+  border-radius: 5em;
+  padding: 0.375rem 0.75rem;
+}
+
+.username-input:focus {
+  outline: none;
+}
+
 /* Colors  */
 .blue {
   background-color: #1976d2;
@@ -113,4 +170,36 @@ body {
 
 .teal {
   background-color: #00897b;
+}
+
+/* Mobile */
+.mobile {
+  display: none;
+}
+
+@media only screen and (max-device-width: 768px) {
+  .game-grid {
+    display: grid;
+    grid-template-areas:
+      'board'
+      'buttons'
+      'cards'
+      'chat';
+  }
+
+  .game-board {
+    margin: 0 auto;
+  }
+
+  .mobile {
+    display: block;
+  }
+
+  .chat {
+    display: none;
+  }
+
+  .cell:hover {
+    box-shadow: none;
+  }
 }

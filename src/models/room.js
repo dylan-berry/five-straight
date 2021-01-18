@@ -69,6 +69,10 @@ const roomSchema = new mongoose.Schema({
   turn: {
     type: Number,
     default: 1
+  },
+  turnOwner: {
+    type: String,
+    default: null
   }
 });
 
