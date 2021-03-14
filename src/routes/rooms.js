@@ -2,10 +2,6 @@ const Room = require('../models/room');
 const express = require('express');
 const router = express.Router();
 
-const board = require('../assets/board.json');
-const deck = require('../assets/deck.json');
-const players = [];
-
 // Read rooms
 router.get('/', async (req, res) => {
   try {
@@ -28,7 +24,7 @@ router.get('/:id', async (req, res) => {
 
 // Create room
 router.post('/', async (req, res) => {
-  let room = new Room({ board, deck, players, name: null });
+  let room = new Room(req.body);
 
   try {
     await room.save();

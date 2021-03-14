@@ -188,6 +188,7 @@ socket.on('client:stand', async data => {
 });
 
 socket.on('client:start', () => {
+  gameBoard.style.pointerEvents = 'all';
   drawBtn.style.display = 'inline-block';
   playerHand.style.display = 'grid';
   seats.style.display = 'none';
@@ -202,8 +203,10 @@ socket.on('client:turn', room => {
   updateTurnText(room);
 });
 
-socket.on('client:winner', () => {
-  chat.innerHTML += `<p class="chat-action">Winner, winner, chicken dinner.</p>`;
+socket.on('client:winner', team => {
+  gameBoard.style.pointerEvents = 'none';
+  restartBtn.disabled = false;
+  chat.innerHTML += `<p class="chat-action">${team.toUpperCase()} team wins!</p>`;
   chat.scrollIntoView(false);
-  log.innerHTML = `<p class="chat-action">Winner, winner, chicken dinner.</p>`;
+  log.innerHTML = `<p class="chat-action">${team.toUpperCase()} team wins!</p>`;
 });

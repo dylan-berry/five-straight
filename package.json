@@ -1,27 +1,41 @@
 {
-  "name": "five-straight-new",
+  "name": "five-straight",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "postcss.config.js",
   "scripts": {
-    "dev": "nodemon src/app.js",
-    "start": "node src/app.js"
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dylan-berry/five-straight.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dylan-berry/five-straight/issues"
+  },
+  "homepage": "https://github.com/dylan-berry/five-straight#readme",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "mongodb": "^3.6.3",
-    "mongoose": "^5.11.8",
+    "mongodb": "^3.6.4",
+    "mongoose": "^5.11.18",
     "node-fetch": "^2.6.1",
-    "pg": "^8.5.1",
-    "socket.io": "^3.0.4"
+    "socket.io": "^3.1.2",
+    "vue": "^3.0.7",
+    "vue-router": "^3.5.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "@vitejs/plugin-vue": "^1.1.5",
+    "@vue/compiler-sfc": "^3.0.7",
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.2.8",
+    "tailwindcss": "^2.0.3",
+    "vite": "^2.0.5"
   }
 }

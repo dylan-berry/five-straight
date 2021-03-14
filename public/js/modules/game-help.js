@@ -1,4 +1,4 @@
-import { updateRoom, readRoom } from './api-calls.js';
+import { updateRoom } from './api-calls.js';
 
 const id = window.location.search.slice(6);
 

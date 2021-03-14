@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+const board = require('../assets/board.json');
+const deck = require('../assets/deck.json');
+
 const roomSchema = new mongoose.Schema({
   board: [
     {
@@ -24,8 +27,7 @@ const roomSchema = new mongoose.Schema({
     }
   ],
   date: {
-    type: Date,
-    default: Date.now
+    type: Date
   },
   deck: [
     {
@@ -34,6 +36,12 @@ const roomSchema = new mongoose.Schema({
       }
     }
   ],
+  maxPlayers: {
+    type: Number
+  },
+  maxTeams: {
+    type: Number
+  },
   name: {
     type: Number
   },
@@ -66,6 +74,11 @@ const roomSchema = new mongoose.Schema({
       }
     }
   ],
+  teams: [
+    {
+      type: String
+    }
+  ],
   turn: {
     type: Number,
     default: 1
@@ -82,6 +95,8 @@ roomSchema.pre('save', async function (next) {
 
   if (room.isModified('name')) {
     room.name = Math.floor(Math.random() * 999);
+    room.board = board;
+    room.deck = deck;
   }
 
   next();

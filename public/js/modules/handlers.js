@@ -5,18 +5,18 @@ const id = window.location.search.slice(6);
 
 // Click game board
 const handleBoardClick = async e => {
-  if (eval(localStorage.getItem('turn')) === true) {
-    localStorage.setItem('turn', false);
+  // if (eval(localStorage.getItem('turn')) === true) {
+  // localStorage.setItem('turn', false);
 
-    const room = await readRoom(id);
-    const spaceValue = Number(e.target.textContent);
-    const player = room.players.find(player => player.username === localStorage.getItem('username'));
-    const space = room.board.find(space => space.value === spaceValue);
+  const room = await readRoom(id);
+  const spaceValue = Number(e.target.textContent);
+  const player = room.players.find(player => player.username === localStorage.getItem('username'));
+  const space = room.board.find(space => space.value === spaceValue);
 
-    socket.emit('server:play', space, player, room);
-  } else {
-    document.querySelector('.chat').innerHTML += `<p class="chat-action text-danger">It's not your turn</p>`;
-  }
+  socket.emit('server:play', space, player, room);
+  // } else {
+  //   document.querySelector('.chat').innerHTML += `<p class="chat-action text-danger">It's not your turn</p>`;
+  // }
 };
 
 // Click 'Draw Card' button

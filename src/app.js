@@ -6,11 +6,10 @@ const socketIO = require('socket.io');
 const fetch = require('node-fetch');
 
 require('./db/mongoose');
-const room = require('./routes/room');
-const user = require('./routes/user');
+const rooms = require('./routes/rooms.js');
 
 const port = process.env.PORT || 3000;
-const publicDirectoryPath = path.join(__dirname, '../public');
+const publicDirectoryPath = path.join(__dirname, '../dist');
 
 // Express
 const app = express();
@@ -18,8 +17,7 @@ app.use(express.static(publicDirectoryPath));
 app.use(express.json());
 
 // Routes
-app.use('/rooms', room);
-app.use('/users', user);
+app.use('/rooms', rooms);
 
 // Start server
 const server = app.listen(port, () => {
@@ -28,7 +26,7 @@ const server = app.listen(port, () => {
 
 // Sockets
 const io = socketIO(server);
-const { findMax } = require('./game-logic');
+const { findMax, isWinner } = require('./game-logic');
 
 io.on('connection', socket => {
   console.log(`User ${socket.id} connected`);
@@ -60,27 +58,33 @@ io.on('connection', socket => {
   });
 
   socket.on('server:play', (space, player, room) => {
-    const playerIndex = room.players.findIndex(p => p._id === player._id);
+    // const playerIndex = room.players.findIndex(p => p._id === player._id);
     const spaceIndex = room.board.findIndex(s => s.value === space.value);
-    const max = findMax(space.value, player.hand);
+    // const max = findMax(space.value, player.hand);
 
-    if (space.hasPeg) {
-      io.to(socket.id).emit('client:error', 'Space already has a peg.');
-      io.to(socket.id).emit('client:resetTurn');
-    } else if (max === -1) {
-      io.to(socket.id).emit('client:error', `You don't have a card to play there.`);
-      io.to(socket.id).emit('client:resetTurn');
-    } else {
-      console.log(`Player is playing ${max} in ${space.value}`);
+    // if (space.hasPeg) {
+    //   io.to(socket.id).emit('client:error', 'Space already has a peg.');
+    //   io.to(socket.id).emit('client:resetTurn');
+    // } else if (max === -1) {
+    //   io.to(socket.id).emit('client:error', `You don't have a card to play there.`);
+    //   io.to(socket.id).emit('client:resetTurn');
+    // } else {
+    //   console.log(`Player is playing ${max} in ${space.value}`);
 
-      room.board[spaceIndex].hasPeg = true;
-      room.board[spaceIndex].team = player.team;
-      player.hand = player.hand.filter(card => card.value !== max);
-      room.players[playerIndex].hand = player.hand;
+    room.board[spaceIndex].hasPeg = true;
+    room.board[spaceIndex].team = player.team;
+    // player.hand = player.hand.filter(card => card.value !== max);
+    // room.players[playerIndex].hand = player.hand;
 
-      io.emit('client:playPeg', max, space.value, player, room);
-      io.to(socket.id).emit('client:playCard', player.hand, room);
+    const max = 0;
+    io.emit('client:playPeg', max, space.value, player, room);
+    io.to(socket.id).emit('client:playCard', player.hand, room);
+
+    if (isWinner(room.board, space.value)) {
+      io.emit('client:winner', player.team);
+      //save game to archive
     }
+    // }
   });
 
   socket.on('server:reset', () => {
