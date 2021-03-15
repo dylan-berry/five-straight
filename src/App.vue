@@ -1,17 +1,12 @@
 <template>
-  <HomePage />
+  <Home />
 </template>
 
-<script setup>
-import HomePage from './components/homepage/HomePage.vue';
-</script>
+<script>
+import Home from './views/Home.vue';
 
-<style>
-#app {
-  font-family: Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-</style>
+export default {
+  name: 'App',
+  components: { Home },
+};
+</script>

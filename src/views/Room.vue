@@ -11,10 +11,10 @@
 <script>
 import axios from 'axios';
 
-import Board from './room/Board.vue';
-import Chat from './room/Chat.vue';
-import Hand from './room/Hand.vue';
-import Seats from './room/Seats.vue';
+import Board from '../components/room/Board.vue';
+import Chat from '../components/room/Chat.vue';
+import Hand from '../components/room/Hand.vue';
+import Seats from '../components/room/Seats.vue';
 
 export default {
   data() {

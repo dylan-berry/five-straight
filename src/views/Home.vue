@@ -1,6 +1,6 @@
 <template>
   <Room v-if="roomID" :roomID="roomID" />
-  <div v-if="!roomID" class="container mx-auto">
+  <div v-if="!roomID" class="container mx-auto text-center">
     <h1 class="text-3xl mt-5">Welcome to Five Straight!</h1>
     <h2 class="text-xl mb-5">Join or create a game below.</h2>
     <button
@@ -27,9 +27,9 @@
 <script>
 import axios from 'axios';
 
-import CreateGameMenu from './homepage/CreateGameMenu.vue';
-import Room from './room/Room.vue';
-import RoomInfo from './homepage/RoomInfo.vue';
+import CreateGameMenu from '../components/home/CreateGameMenu.vue';
+import Room from './Room.vue';
+import RoomInfo from '../components/home/RoomInfo.vue';
 
 export default {
   data() {
