@@ -13,16 +13,17 @@
 
 <script>
 export default {
+  name: 'RoomInfo',
+  components: {},
+  props: ['room'],
+  emits: ['join'],
   data() {
     return {};
   },
   methods: {
-    handleJoinGame: function (id) {
+    handleJoinGame(id) {
       this.$emit('join', id);
     },
   },
-  emits: ['join'],
-  props: ['room'],
-  components: {},
 };
 </script>

@@ -22,19 +22,22 @@
 
 <script>
 export default {
+  name: 'Seats',
+  components: {},
+  props: ['room'],
+  emits: [],
   data() {
     return {};
   },
   methods: {
-    handleSitDown: function () {
+    handleSitDown() {
       console.log('[DEBUG] Sitting down');
       // Add player to players array
       // Assign player to team
     },
-    handleNameSubmit: function () {
+    handleNameSubmit() {
       console.log('[DEBUG] Name submitted');
     },
   },
-  props: ['room'],
 };
 </script>

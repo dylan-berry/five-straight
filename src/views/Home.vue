@@ -32,6 +32,13 @@ import Room from './Room.vue';
 import RoomInfo from '../components/home/RoomInfo.vue';
 
 export default {
+  name: 'Home',
+  components: {
+    CreateGameMenu,
+    Room,
+    RoomInfo,
+  },
+  props: [],
   data() {
     return {
       roomID: '',
@@ -40,27 +47,21 @@ export default {
     };
   },
   methods: {
-    handleJoinGame: function (id) {
+    handleJoinGame(id) {
       console.log(`[DEBUG] Joining game ${id}`);
       this.roomID = id;
     },
-    loadRooms: async function () {
+    async loadRooms() {
       const res = await axios.get('/rooms');
       this.rooms = res.data;
     },
-    roomCreated: async function () {
+    async roomCreated() {
       this.setup = false;
       await this.loadRooms();
     },
-    setupGame: function () {
+    setupGame() {
       this.setup = true;
     },
-  },
-  props: [],
-  components: {
-    CreateGameMenu,
-    Room,
-    RoomInfo,
   },
   async mounted() {
     const res = await axios.get('/rooms');

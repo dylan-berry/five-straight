@@ -4,13 +4,14 @@
 
 <script>
 export default {
+  name: 'Chat',
+  components: {},
+  props: [],
   data() {
     return {
       logs: [],
     };
   },
   methods: {},
-  props: [],
-  components: {},
 };
 </script>

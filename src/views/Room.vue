@@ -17,17 +17,18 @@ import Hand from '../components/room/Hand.vue';
 import Seats from '../components/room/Seats.vue';
 
 export default {
-  data() {
-    return {
-      room: {},
-    };
-  },
-  props: ['roomID'],
+  name: 'Room',
   components: {
     Board,
     Chat,
     Hand,
     Seats,
+  },
+  props: ['roomID'],
+  data() {
+    return {
+      room: {},
+    };
   },
   async mounted() {
     const res = await axios.get(`/rooms/${roomID}`);

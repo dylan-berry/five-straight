@@ -61,6 +61,10 @@
 import axios from 'axios';
 
 export default {
+  name: 'CreateGameMenu',
+  components: [],
+  props: [],
+  emits: ['room'],
   data() {
     return {
       form: {
@@ -72,7 +76,7 @@ export default {
     };
   },
   methods: {
-    createGame: async function (e) {
+    async createGame(e) {
       e.preventDefault();
       if (this.form.maxPlayers % this.form.maxTeams !== 0) {
         this.error = 'Players must divide into teams evenly';
@@ -90,22 +94,19 @@ export default {
         this.$emit('roomCreated');
       }
     },
-    decMaxPlayers: function () {
+    decMaxPlayers() {
       if (this.form.maxPlayers > 2) this.form.maxPlayers--;
     },
-    decMaxTeams: function () {
+    decMaxTeams() {
       if (this.form.maxTeams > 2) this.form.maxTeams--;
     },
-    incMaxPlayers: function () {
+    incMaxPlayers() {
       if (this.form.maxPlayers < 9) this.form.maxPlayers++;
     },
-    incMaxTeams: function () {
+    incMaxTeams() {
       if (this.form.maxTeams < 4 && this.form.maxTeams < this.form.maxPlayers)
         this.form.maxTeams++;
     },
   },
-  emits: ['room'],
-  props: [],
-  components: [],
 };
 </script>

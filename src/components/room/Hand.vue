@@ -13,17 +13,19 @@
 
 <script>
 export default {
+  name: 'Hand',
+  components: {},
+  // props: ['hand'],
+  emits: [],
   data() {
     return {
       hand: [{ value: 5 }, { value: 66 }, { value: 98 }],
     };
   },
   methods: {
-    handleCardClick: function (card) {
+    handleCardClick(card) {
       console.log(`[DEBUG] Card ${card.value} clicked`);
     },
   },
-  // props: ['hand'],
-  components: {},
 };
 </script>

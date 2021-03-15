@@ -15,17 +15,18 @@
 import board from '../../assets/board.json';
 
 export default {
+  name: 'Board',
+  components: {},
+  props: {},
   data() {
     return {
       board,
     };
   },
   methods: {
-    handleSpaceClick: function (space) {
+    handleSpaceClick(space) {
       console.log(`[DEBUG] Space ${space.value} clicked`);
     },
   },
-  props: {},
-  components: {},
 };
 </script>
