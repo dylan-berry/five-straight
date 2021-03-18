@@ -1,6 +1,5 @@
 <template>
-  <Room v-if="roomID" :roomID="roomID" />
-  <div v-if="!roomID" class="container mx-auto text-center">
+  <div class="container mx-auto text-center">
     <h1 class="text-3xl mt-5">Welcome to Five Straight!</h1>
     <h2 class="text-xl mb-5">Join or create a game below.</h2>
     <button
@@ -14,12 +13,7 @@
     <CreateGameMenu v-if="setup" @roomCreated="roomCreated" />
 
     <div class="flex flex-wrap justify-center">
-      <RoomInfo
-        v-for="room in rooms"
-        :room="room"
-        :key="room._id"
-        @join="handleJoinGame"
-      />
+      <RoomInfo v-for="room in rooms" :room="room" :key="room._id" />
     </div>
   </div>
 </template>
@@ -27,30 +21,23 @@
 <script>
 import axios from 'axios';
 
-import CreateGameMenu from '../components/home/CreateGameMenu.vue';
-import Room from './Room.vue';
-import RoomInfo from '../components/home/RoomInfo.vue';
+import CreateGameMenu from './CreateGameMenu.vue';
+import RoomInfo from './RoomInfo.vue';
 
 export default {
   name: 'Home',
   components: {
     CreateGameMenu,
-    Room,
-    RoomInfo,
+    RoomInfo
   },
   props: [],
   data() {
     return {
-      roomID: '',
       rooms: [],
-      setup: false,
+      setup: false
     };
   },
   methods: {
-    handleJoinGame(id) {
-      console.log(`[DEBUG] Joining game ${id}`);
-      this.roomID = id;
-    },
     async loadRooms() {
       const res = await axios.get('/rooms');
       this.rooms = res.data;
@@ -61,11 +48,10 @@ export default {
     },
     setupGame() {
       this.setup = true;
-    },
+    }
   },
   async mounted() {
-    const res = await axios.get('/rooms');
-    this.rooms = res.data;
-  },
+    this.loadRooms();
+  }
 };
 </script>

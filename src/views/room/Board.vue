@@ -20,13 +20,13 @@ export default {
   props: {},
   data() {
     return {
-      board,
+      board
     };
   },
   methods: {
     handleSpaceClick(space) {
       console.log(`[DEBUG] Space ${space.value} clicked`);
-    },
-  },
+    }
+  }
 };
 </script>

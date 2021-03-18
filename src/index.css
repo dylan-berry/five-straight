@@ -6,4 +6,8 @@
   .btn-round {
     @apply text-white rounded-full px-3 py-1;
   }
+  .game-board {
+    width: 550px;
+    height: 550px;
+  }
 }

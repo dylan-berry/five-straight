@@ -1,6 +1,10 @@
 <template>
   <div class="mb-5">
-    <form action="submit" class="mb-5" @submit.prevent="handleNameSubmit">
+    <form
+      action="submit"
+      class="mb-5 text-center"
+      @submit.prevent="handleNameSubmit"
+    >
       <input
         type="text"
         class="border-b-2 mx-auto mr-2 py-1 px-2"
@@ -37,7 +41,7 @@ export default {
     },
     handleNameSubmit() {
       console.log('[DEBUG] Name submitted');
-    },
-  },
+    }
+  }
 };
 </script>

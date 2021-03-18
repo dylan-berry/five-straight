@@ -1,11 +1,7 @@
 <template>
   <div class="max-w-screen-sm mx-auto rounded bg-white p-5 my-5">
     <h2 class="text-xl">Choose game settings</h2>
-    <form
-      action="submit"
-      class="grid grid-cols-2 gap-4 mt-5"
-      @submit="createGame"
-    >
+    <form class="grid grid-cols-2 gap-4 mt-5" @submit="createGame">
       <label for="maxPlayers" class="text-right"># of Players</label>
       <div class="flex">
         <button
@@ -70,9 +66,9 @@ export default {
       form: {
         maxPlayers: 4,
         maxTeams: 2,
-        teams: ['teal', 'orange'],
+        teams: ['teal', 'orange']
       },
-      error: '',
+      error: ''
     };
   },
   methods: {
@@ -87,7 +83,7 @@ export default {
           maxPlayers: this.form.maxPlayers,
           maxTeams: this.form.maxTeams,
           name: null,
-          teams: this.form.teams,
+          teams: this.form.teams
         };
 
         const res = await axios.post('/rooms', data);
@@ -106,7 +102,7 @@ export default {
     incMaxTeams() {
       if (this.form.maxTeams < 4 && this.form.maxTeams < this.form.maxPlayers)
         this.form.maxTeams++;
-    },
-  },
+    }
+  }
 };
 </script>
