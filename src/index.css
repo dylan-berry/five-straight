@@ -4,7 +4,7 @@
 
 @layer components {
   .btn-round {
-    @apply text-white rounded-full px-3 py-1;
+    @apply text-white rounded px-3 py-1;
   }
   .game-board {
     width: 550px;

@@ -54,19 +54,18 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 export default {
   name: 'CreateGameMenu',
-  components: [],
-  props: [],
-  emits: ['room'],
+  emits: ['roomCreated'],
   data() {
     return {
       form: {
         maxPlayers: 4,
         maxTeams: 2,
-        teams: ['teal', 'orange']
+        teams: [
+          ['bg-teal-600', 'bg-orange-600'],
+          ['bg-blue-600', 'bg-pink-600']
+        ]
       },
       error: ''
     };
@@ -82,12 +81,30 @@ export default {
         const data = {
           maxPlayers: this.form.maxPlayers,
           maxTeams: this.form.maxTeams,
-          name: null,
-          teams: this.form.teams
+          teams: this.form.teams[
+            Math.floor(Math.random() * this.form.teams.length)
+          ],
+          // Below this will be generated on the server is just here for testing purposes
+          name: Math.ceil(Math.random() * 999),
+          players: [],
+          id: Math.ceil(Math.random() * 999),
+          open: true,
+          turn: 1,
+          turnOwner: null
         };
 
-        const res = await axios.post('/rooms', data);
-        this.$emit('roomCreated');
+        try {
+          await fetch('http://localhost:3000/rooms', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+          this.$emit('roomCreated');
+        } catch (error) {
+          console.log('[ERROR]', error.message);
+        }
       }
     },
     decMaxPlayers() {

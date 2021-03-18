@@ -19,8 +19,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-
 import CreateGameMenu from './CreateGameMenu.vue';
 import RoomInfo from './RoomInfo.vue';
 
@@ -30,7 +28,6 @@ export default {
     CreateGameMenu,
     RoomInfo
   },
-  props: [],
   data() {
     return {
       rooms: [],
@@ -39,8 +36,12 @@ export default {
   },
   methods: {
     async loadRooms() {
-      const res = await axios.get('/rooms');
-      this.rooms = res.data;
+      try {
+        const res = await fetch('http://localhost:3000/rooms');
+        this.rooms = await res.json();
+      } catch (error) {
+        console.log('[ERROR]', error.message);
+      }
     },
     async roomCreated() {
       this.setup = false;

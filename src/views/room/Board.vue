@@ -12,17 +12,9 @@
 </template>
 
 <script>
-import board from '../../assets/board.json';
-
 export default {
   name: 'Board',
-  components: {},
-  props: {},
-  data() {
-    return {
-      board
-    };
-  },
+  props: ['board'],
   methods: {
     handleSpaceClick(space) {
       console.log(`[DEBUG] Space ${space.value} clicked`);

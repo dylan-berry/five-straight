@@ -5,13 +5,10 @@
 <script>
 export default {
   name: 'Chat',
-  components: {},
-  props: [],
   data() {
     return {
-      logs: [],
+      logs: []
     };
-  },
-  methods: {},
+  }
 };
 </script>

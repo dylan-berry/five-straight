@@ -23,6 +23,7 @@
     "core-js": "^3.9.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "json-server": "^0.16.3",
     "mongodb": "^3.6.4",
     "mongoose": "^5.11.18",
     "node-fetch": "^2.6.1",

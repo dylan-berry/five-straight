@@ -14,18 +14,16 @@
 <script>
 export default {
   name: 'Hand',
-  components: {},
   // props: ['hand'],
-  emits: [],
   data() {
     return {
-      hand: [{ value: 5 }, { value: 66 }, { value: 98 }],
+      hand: [{ value: 5 }, { value: 66 }, { value: 98 }]
     };
   },
   methods: {
     handleCardClick(card) {
       console.log(`[DEBUG] Card ${card.value} clicked`);
-    },
-  },
+    }
+  }
 };
 </script>

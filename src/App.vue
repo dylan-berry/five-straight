@@ -1,7 +1,7 @@
 <template>
-  <div id="nav">
+  <nav class="shadow p-3">
     <router-link :to="{ name: 'Home' }">Home</router-link>
-  </div>
+  </nav>
 
   <router-view />
 </template>
