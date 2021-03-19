@@ -32,10 +32,6 @@ seats.addEventListener('click', e => {
   }
 });
 
-settingsBtn.addEventListener('click', () => {
-  handleSettings();
-});
-
 startBtn.addEventListener('click', () => {
   handleStart();
 });

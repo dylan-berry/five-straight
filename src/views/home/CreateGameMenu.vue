@@ -12,7 +12,7 @@
           -
         </button>
         <div name="maxPlayers" class="border-t border-b py-1 px-3">
-          {{ form.maxPlayers }}
+          {{ maxPlayers }}
         </div>
         <button
           type="button"
@@ -33,7 +33,7 @@
           -
         </button>
         <div name="maxTeams" class="border-t border-b py-1 px-3">
-          {{ form.maxTeams }}
+          {{ maxTeams }}
         </div>
         <button
           type="button"
@@ -59,38 +59,31 @@ export default {
   emits: ['roomCreated'],
   data() {
     return {
-      form: {
-        maxPlayers: 4,
-        maxTeams: 2,
-        teams: [
-          ['bg-teal-600', 'bg-orange-600'],
-          ['bg-blue-600', 'bg-pink-600']
-        ]
-      },
+      maxPlayers: 4,
+      maxTeams: 2,
+      teams: [
+        ['bg-teal-600', 'bg-orange-600'],
+        ['bg-blue-600', 'bg-pink-600', 'bg-yellow-400'],
+        ['bg-red-600', 'bg-green-600', 'bg-yellow-400', 'bg-blue-600']
+      ],
       error: ''
     };
   },
   methods: {
     async createGame(e) {
       e.preventDefault();
-      if (this.form.maxPlayers % this.form.maxTeams !== 0) {
+      if (this.maxPlayers % this.maxTeams !== 0) {
         this.error = 'Players must divide into teams evenly';
       } else {
         this.error = '';
 
+        const teams = this.teams.find(team => team.length === this.maxTeams);
+
         const data = {
-          maxPlayers: this.form.maxPlayers,
-          maxTeams: this.form.maxTeams,
-          teams: this.form.teams[
-            Math.floor(Math.random() * this.form.teams.length)
-          ],
-          // Below this will be generated on the server is just here for testing purposes
-          name: Math.ceil(Math.random() * 999),
-          players: [],
-          id: Math.ceil(Math.random() * 999),
-          open: true,
-          turn: 1,
-          turnOwner: null
+          maxPlayers: this.maxPlayers,
+          maxTeams: this.maxTeams,
+          name: '',
+          teams
         };
 
         try {
@@ -108,17 +101,16 @@ export default {
       }
     },
     decMaxPlayers() {
-      if (this.form.maxPlayers > 2) this.form.maxPlayers--;
+      if (this.maxPlayers > 2) this.maxPlayers--;
     },
     decMaxTeams() {
-      if (this.form.maxTeams > 2) this.form.maxTeams--;
+      if (this.maxTeams > 2) this.maxTeams--;
     },
     incMaxPlayers() {
-      if (this.form.maxPlayers < 9) this.form.maxPlayers++;
+      if (this.maxPlayers < 9) this.maxPlayers++;
     },
     incMaxTeams() {
-      if (this.form.maxTeams < 4 && this.form.maxTeams < this.form.maxPlayers)
-        this.form.maxTeams++;
+      if (this.maxTeams < 4 && this.maxTeams < this.maxPlayers) this.maxTeams++;
     }
   }
 };

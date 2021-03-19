@@ -4,6 +4,7 @@
       v-if="room.gameState === 0"
       class="btn bg-blue-600"
       @click="startGame"
+      :disabled="room.players.length !== room.maxPlayers"
     >
       Start Game
     </button>

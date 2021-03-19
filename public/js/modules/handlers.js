@@ -1,5 +1,5 @@
-import { readRoom, addPlayer, removePlayer, updateRoom } from './api-calls.js';
-import { dealCards, drawCard } from './game-help.js';
+import { readRoom, removePlayer, updateRoom } from './api-calls.js';
+import { dealCards } from './game-help.js';
 
 const id = window.location.search.slice(6);
 
@@ -16,7 +16,7 @@ const handleReset = async () => {
 };
 
 const handleRestart = async () => {
-  const data = await updateRoom(id, { restart: [] });
+  await updateRoom(id, { restart: [] });
   socket.emit('server:restart');
 };
 

@@ -1,13 +1,17 @@
 <template>
-  <div class="game-board flex flex-wrap mx-auto">
-    <div
-      class="flex w-1/10 justify-center items-center cursor-pointer bg-gray-300 border-2 border-gray-100 text-xl font-bold"
-      :class="space.team"
-      v-for="space in room.board"
-      :key="space.value"
-      @click="placePeg(space)"
-    >
-      {{ space.value }}
+  <div class="md:w-2/3 mx-auto">
+    <div class="game-board-container">
+      <div class="flex flex-wrap mx-auto w-full h-full absolute">
+        <div
+          class="flex w-1/10 justify-center items-center cursor-pointer bg-gray-300 border-2 border-white text-xl font-bold w-full"
+          :class="space.team"
+          v-for="space in room.board"
+          :key="space.value"
+          @click="placePeg(space)"
+        >
+          {{ space.value }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -36,7 +40,7 @@ export default {
 
       const max = this.findMax(space.value, this.hand);
       if (max === -1) {
-        console.log(`[DEBUG] Cards too high to play there`);
+        console.log(`[DEBUG] You can't play there`);
         return false;
       }
 

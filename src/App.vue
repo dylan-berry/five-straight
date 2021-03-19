@@ -1,8 +1,8 @@
 <template>
   <nav class="flex bg-white border-b p-3 justify-between content-center">
-    <router-link class="text-xl font-bold" :to="{ name: 'Home' }"
-      >five straight</router-link
-    >
+    <router-link class="text-xl text-gray-800 font-bold" :to="{ name: 'Home' }">
+      five straight
+    </router-link>
     <a href="#">Settings</a>
   </nav>
 

@@ -2,7 +2,7 @@ const Room = require('../models/room');
 const express = require('express');
 const router = express.Router();
 
-// Read rooms
+// Read all rooms
 router.get('/', async (req, res) => {
   try {
     const rooms = await Room.find({});
@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Read room
+// Read specifc room
 router.get('/:id', async (req, res) => {
   try {
     const room = await Room.findById(req.params.id);
@@ -44,9 +44,9 @@ router.patch('/:id', async (req, res) => {
 
     for (let update of updates) {
       if (update === 'restart') {
-        room.turn = 1;
         room.board = board;
         room.deck = deck;
+        room.turn = 1;
         room.turnOwner = null;
         for (let player of room.players) {
           player.hand = [];
@@ -63,48 +63,12 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// Add player
-router.patch('/player/:id', async (req, res) => {
-  const { players } = req.body;
-
-  try {
-    const room = await Room.findById(req.params.id);
-    room.players = room.players.concat(players);
-
-    await room.save();
-    res.status(200).send(room);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
-
 router.delete('/:id', async (req, res) => {
   try {
     const room = await Room.findByIdAndDelete(req.params.id);
     res.status(200).send(room);
   } catch (error) {
     res.status(400).send({ error });
-  }
-});
-
-// Remove player
-router.delete('/player/:id', async (req, res) => {
-  const { socketID } = req.body;
-  console.log(`User ${socketID} is being removed`);
-  const room = await Room.findById(req.params.id);
-  const player = room.players.filter(player => player.socketID === socketID);
-
-  if (player.length > 0) {
-    try {
-      room.players = room.players.filter(player => player.socketID !== socketID);
-
-      await room.save();
-      res.status(200).send(player[0]);
-    } catch (error) {
-      res.status(400).send({ error });
-    }
-  } else {
-    res.status(400).send({ error: 'Player does not exist.' });
   }
 });
 

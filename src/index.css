@@ -4,10 +4,10 @@
 
 @layer components {
   .btn {
-    @apply text-white rounded px-3 py-1;
+    @apply text-white rounded px-3 py-1 disabled:opacity-50;
   }
-  .game-board {
-    width: 550px;
-    height: 550px;
+  .game-board-container {
+    position: relative;
+    padding-bottom: 100%;
   }
 }

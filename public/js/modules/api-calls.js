@@ -1,23 +1,3 @@
-const readRoom = async id => {
-  const res = await fetch(`/rooms/${id}`);
-  const data = await res.json();
-  return data;
-};
-
-const updateRoom = async (id, object) => {
-  const json = JSON.stringify(object);
-  const res = await fetch(`/rooms/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: json
-  });
-
-  const data = await res.json();
-  return data;
-};
-
 const addPlayer = async (id, username, playerNum, team, socketID) => {
   const json = JSON.stringify({ players: [{ username, playerNum, team, socketID }] });
 

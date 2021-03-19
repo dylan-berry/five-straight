@@ -4,8 +4,9 @@
     <p class="my-5">Players {{ room.players.length }}/{{ room.maxPlayers }}</p>
     <!-- TODO set id param in router-link to room._id -->
     <router-link
-      :to="{ name: 'Room', params: { id: room.id } }"
+      :to="{ name: 'Room', params: { id: room._id } }"
       class="btn bg-blue-600 text-sm block"
+      @click="joinGame"
     >
       Join Game
     </router-link>
@@ -15,6 +16,12 @@
 <script>
 export default {
   name: 'RoomInfo',
-  props: ['room']
+  props: ['room'],
+  emits: ['join'],
+  methods: {
+    joinGame() {
+      console.log('[DEBUG] Joining game');
+    }
+  }
 };
 </script>

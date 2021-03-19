@@ -27,7 +27,8 @@ const roomSchema = new mongoose.Schema({
     }
   ],
   date: {
-    type: Date
+    type: Date,
+    default: Date()
   },
   deck: [
     {
@@ -36,6 +37,10 @@ const roomSchema = new mongoose.Schema({
       }
     }
   ],
+  gameState: {
+    type: Number,
+    default: 0
+  },
   maxPlayers: {
     type: Number
   },
@@ -90,7 +95,7 @@ const roomSchema = new mongoose.Schema({
 });
 
 // Generate random name for room
-roomSchema.pre('save', async function (next) {
+roomSchema.pre('save', async function(next) {
   const room = this;
 
   if (room.isModified('name')) {

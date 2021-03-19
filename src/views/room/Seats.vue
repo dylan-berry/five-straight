@@ -25,10 +25,10 @@
       <span v-for="team in room.teams" :key="team">
         <button
           class="btn m-1"
-          :class="team"
+          :class="[team, `btn-${index}`]"
           v-for="index in room.maxPlayers / room.maxTeams"
           :key="index"
-          @click="handleSitDown(team)"
+          @click="handleSitDown(team, index)"
         >
           Sit Down
         </button>
@@ -41,6 +41,7 @@
 export default {
   name: 'Seats',
   props: ['room'],
+  emits: ['sit'],
   data() {
     return {
       username: '',
@@ -49,22 +50,16 @@ export default {
   },
   methods: {
     async handleSitDown(team) {
+      // TODO update button text when player sits down
       console.log(`[DEBUG] ${this.username} sat down on ${team}`);
-      this.room.players.push({ username: this.username, team });
 
-      try {
-        await fetch(`http://localhost:3000/rooms/${this.room.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(this.room)
-        });
-        // TODO let everyone know player has sat down
-        // socket.emit('server:sit', room, username, playerNum, socketID);
-      } catch (error) {
-        console.log('[ERROR]', error.message);
-      }
+      this.room.players.push({
+        username: this.username,
+        team,
+        socketID: localStorage.getItem('socketID')
+      });
+
+      this.$emit('sit');
     },
     handleNameSubmit() {
       console.log('[DEBUG] Name submitted');

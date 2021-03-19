@@ -3,7 +3,7 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const socketIO = require('socket.io');
-const fetch = require('node-fetch');
+const history = require('connect-history-api-fallback');
 
 require('./db/mongoose');
 const rooms = require('./routes/rooms.js');
@@ -13,11 +13,13 @@ const publicDirectoryPath = path.join(__dirname, '../dist');
 
 // Express
 const app = express();
-app.use(express.static(publicDirectoryPath));
 app.use(express.json());
 
 // Routes
 app.use('/rooms', rooms);
+
+app.use(history());
+app.use(express.static(publicDirectoryPath));
 
 // Start server
 const server = app.listen(port, () => {
@@ -29,27 +31,25 @@ const io = socketIO(server);
 const { isWinner } = require('./game-logic');
 
 io.on('connection', socket => {
-  console.log(`User ${socket.id} connected`);
-
-  socket.on('disconnect', async () => {
-    console.log(`User ${socket.id} disconnected`);
-    const roomId = socket.request.headers.referer.split('room=')[1];
-    const host = socket.request.headers.referer.split('/room')[0];
-    const url = `${host}/rooms/player/${roomId}`;
-    const json = JSON.stringify({ socketID: socket.id });
-
-    const res = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: json
-    });
-
-    const data = await res.json();
-
-    io.emit('client:stand', data);
+  socket.on('join', room => {
+    console.log(`[DEBUG] ${socket.id} joined room ${room._id}`);
   });
+
+  socket.on('leave', (room, username) => {
+    console.log(`[DEBUG] ${socket.id} left room ${room._id}`);
+    socket.leave(room._id);
+    io.to(room._id).emit('stand', room, username);
+    // TODO Remove player from seat
+    // TODO Remove player from room in database
+    // TODO Doesn't fire when refreshing room, only when navigating away
+  });
+
+  socket.on('sit', (room, username) => {
+    console.log(`[DEBUG] ${username} has sat down in room ${room._id}`);
+    io.to(room._id).emit('sit', room, username);
+  });
+
+  // OLD
 
   socket.on('server:draw', (player, room) => {
     io.emit('client:draw', player);
@@ -93,12 +93,6 @@ io.on('connection', socket => {
 
   socket.on('server:restart', () => {
     io.emit('client:restart');
-  });
-
-  socket.on('server:sit', async (room, username, playerNum, socketID) => {
-    console.log(`${username} has sat down at table ${room._id}`);
-    io.emit('client:sit', room, username, playerNum, socketID);
-    io.to(socket.id).emit('client:sit disable');
   });
 
   socket.on('server:start', async room => {
