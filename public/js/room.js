@@ -1,7 +1,7 @@
 import { updateRoom } from './modules/api-calls.js';
 import { incrementTurn } from './modules/game-help.js';
 import { populateData, updateTurnText } from './modules/room-help.js';
-import { handleBoardClick, handleDraw, handleForm, handleReset, handleRestart, handleSettings, handleSitDown, handleStart } from './modules/handlers.js';
+import { handleReset, handleRestart, handleSettings, handleSitDown, handleStart } from './modules/handlers.js';
 
 const chat = document.querySelector('.chat');
 const drawBtn = document.querySelector('.draw-btn');
@@ -18,16 +18,6 @@ const usernameForm = document.querySelector('.username-form');
 populateData();
 
 // Event listeners
-drawBtn.addEventListener('click', () => {
-  handleDraw();
-});
-
-gameBoard.addEventListener('click', e => {
-  if (e.target.classList.contains('cell')) {
-    handleBoardClick(e);
-  }
-});
-
 resetBtn.addEventListener('click', () => {
   handleReset();
 });
@@ -48,11 +38,6 @@ settingsBtn.addEventListener('click', () => {
 
 startBtn.addEventListener('click', () => {
   handleStart();
-});
-
-usernameForm.addEventListener('submit', e => {
-  e.preventDefault();
-  handleForm();
 });
 
 // Sockets

@@ -6,20 +6,20 @@
       <div class="flex">
         <button
           type="button"
-          class="material-icons bg-blue-600 text-white text-base w-7 rounded-l"
+          class="bg-blue-600 text-white text-base w-7 rounded-l"
           @click="decMaxPlayers"
         >
-          remove
+          -
         </button>
         <div name="maxPlayers" class="border-t border-b py-1 px-3">
           {{ form.maxPlayers }}
         </div>
         <button
           type="button"
-          class="material-icons bg-blue-600 text-white text-base w-7 rounded-r"
+          class="bg-blue-600 text-white text-base w-7 rounded-r"
           @click="incMaxPlayers"
         >
-          add
+          +
         </button>
       </div>
 
@@ -27,26 +27,26 @@
       <div class="flex">
         <button
           type="button"
-          class="material-icons bg-blue-600 text-white text-base w-7 rounded-l"
+          class="bg-blue-600 text-white text-base w-7 rounded-l"
           @click="decMaxTeams"
         >
-          remove
+          -
         </button>
         <div name="maxTeams" class="border-t border-b py-1 px-3">
           {{ form.maxTeams }}
         </div>
         <button
           type="button"
-          class="material-icons bg-blue-600 text-white text-base w-7 rounded-r"
+          class="bg-blue-600 text-white text-base w-7 rounded-r"
           @click="incMaxTeams"
         >
-          add
+          +
         </button>
       </div>
 
       <p class="text-red-600 col-span-2" v-if="error">{{ error }}</p>
 
-      <button type="submit" class="btn-round bg-blue-600 col-span-2 mx-auto">
+      <button type="submit" class="btn bg-blue-600 col-span-2 mx-auto">
         Create Game
       </button>
     </form>

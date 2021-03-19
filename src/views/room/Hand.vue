@@ -1,10 +1,10 @@
 <template>
+  <GameButtons :hand="hand" :room="room" @drawCard="drawCard" />
   <div class="flex my-5 w-1/2 mx-auto justify-around">
     <div
-      class="flex h-150px w-100px border border-gray-300 rounded-lg font-bold text-3xl justify-center items-center cursor-pointer"
-      v-for="card in hand"
+      class="flex h-150px w-100px border border-gray-300 rounded-lg font-bold text-3xl justify-center items-center"
+      v-for="card in sortedHand"
       :key="card.value"
-      @click="handleCardClick(card)"
     >
       {{ card.value }}
     </div>
@@ -12,17 +12,26 @@
 </template>
 
 <script>
+import GameButtons from './GameButtons.vue';
+
 export default {
   name: 'Hand',
-  // props: ['hand'],
-  data() {
-    return {
-      hand: [{ value: 5 }, { value: 66 }, { value: 98 }]
-    };
-  },
+  components: { GameButtons },
+  props: ['hand', 'room'],
   methods: {
-    handleCardClick(card) {
-      console.log(`[DEBUG] Card ${card.value} clicked`);
+    drawCard() {
+      const random = Math.floor(Math.random() * this.room.deck.length);
+      const card = this.room.deck[random];
+      this.hand.push(card);
+      this.room.deck.splice(random, 1);
+      // TODO sync room info with server
+      // TODO end player turn
+      // socket.emit('server:draw', player, room);
+    }
+  },
+  computed: {
+    sortedHand() {
+      return this.hand.sort((a, b) => a.value - b.value);
     }
   }
 };

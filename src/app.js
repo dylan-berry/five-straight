@@ -26,7 +26,7 @@ const server = app.listen(port, () => {
 
 // Sockets
 const io = socketIO(server);
-const { findMax, isWinner } = require('./game-logic');
+const { isWinner } = require('./game-logic');
 
 io.on('connection', socket => {
   console.log(`User ${socket.id} connected`);

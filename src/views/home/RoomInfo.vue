@@ -5,7 +5,7 @@
     <!-- TODO set id param in router-link to room._id -->
     <router-link
       :to="{ name: 'Room', params: { id: room.id } }"
-      class="btn-round bg-blue-600 text-sm block"
+      class="btn bg-blue-600 text-sm block"
     >
       Join Game
     </router-link>
@@ -15,7 +15,6 @@
 <script>
 export default {
   name: 'RoomInfo',
-  props: ['room'],
-  emits: ['join']
+  props: ['room']
 };
 </script>

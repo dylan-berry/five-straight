@@ -4,7 +4,7 @@
     <h2 class="text-xl mb-5">Join or create a game below.</h2>
     <button
       v-if="rooms.length < 9"
-      class="btn-round bg-blue-600 mb-5"
+      class="btn bg-blue-600 mb-5"
       @click="setupGame"
     >
       Create Game

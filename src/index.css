@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 @layer components {
-  .btn-round {
+  .btn {
     @apply text-white rounded px-3 py-1;
   }
   .game-board {

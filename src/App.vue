@@ -1,6 +1,9 @@
 <template>
-  <nav class="shadow p-3">
-    <router-link :to="{ name: 'Home' }">Home</router-link>
+  <nav class="flex bg-white border-b p-3 justify-between content-center">
+    <router-link class="text-xl font-bold" :to="{ name: 'Home' }"
+      >five straight</router-link
+    >
+    <a href="#">Settings</a>
   </nav>
 
   <router-view />
