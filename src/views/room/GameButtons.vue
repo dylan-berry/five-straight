@@ -3,9 +3,9 @@
     <button
       v-if="room.gameState === 0"
       class="btn bg-blue-600"
-      @click="startGame"
-      :disabled="room.players.length !== room.maxPlayers"
+      @click="$emit('startGame')"
     >
+      <!-- :disabled="room.players.length !== room.maxPlayers" -->
       Start Game
     </button>
     <button
@@ -29,13 +29,8 @@
 <script>
 export default {
   props: ['hand', 'room'],
-  emits: ['drawCard'],
+  emits: ['drawCard', 'startGame'],
   methods: {
-    startGame() {
-      console.log('[DEBUG] Starting game');
-      this.room.gameState === 1;
-      // TODO Sync room with database
-    },
     restartGame() {
       console.log('[DEBUG] Restarting game');
     }

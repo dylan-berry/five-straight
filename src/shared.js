@@ -1,18 +1,28 @@
-const readRoom = async id => {
-  const res = await fetch(`http://localhost:3000/rooms/${id}`);
-  const data = await res.json();
+const fetch = require('node-fetch');
 
-  return data;
+const readRoom = async id => {
+  try {
+    const res = await fetch(`http://localhost:3000/rooms/${id}`);
+    const data = await res.json();
+
+    return data;
+  } catch (error) {
+    console.log(['[ERROR]', error.message]);
+  }
 };
 
 const updateRoom = async (id, data) => {
-  await fetch(`http://localhost:3000/rooms/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  });
+  try {
+    await fetch(`http://localhost:3000/rooms/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+  } catch (error) {
+    console.log(['[ERROR]', error.message]);
+  }
 };
 
-export { readRoom, updateRoom };
+module.exports = { readRoom, updateRoom };

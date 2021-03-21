@@ -1,7 +1,6 @@
 import { updateRoom } from './modules/api-calls.js';
 import { incrementTurn } from './modules/game-help.js';
-import { populateData, updateTurnText } from './modules/room-help.js';
-import { handleReset, handleRestart, handleSettings, handleSitDown, handleStart } from './modules/handlers.js';
+import { updateTurnText } from './modules/room-help.js';
 
 const chat = document.querySelector('.chat');
 const drawBtn = document.querySelector('.draw-btn');
@@ -9,32 +8,9 @@ const gameBoard = document.querySelector('.game-board');
 const log = document.querySelector('.log');
 const playerHand = document.querySelector('.cards-grid');
 const seats = document.querySelector('.seats');
-const settingsBtn = document.querySelector('.settings-btn');
 const startBtn = document.querySelector('.start-btn');
 const restartBtn = document.querySelector('.restart-btn');
-const resetBtn = document.querySelector('.reset-btn');
 const usernameForm = document.querySelector('.username-form');
-
-populateData();
-
-// Event listeners
-resetBtn.addEventListener('click', () => {
-  handleReset();
-});
-
-restartBtn.addEventListener('click', () => {
-  handleRestart();
-});
-
-seats.addEventListener('click', e => {
-  if (e.target.classList.contains('sit-btn') && e.target.textContent == 'Sit Down') {
-    handleSitDown(e);
-  }
-});
-
-startBtn.addEventListener('click', () => {
-  handleStart();
-});
 
 // Sockets
 // Individual event

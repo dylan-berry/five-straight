@@ -34,6 +34,10 @@
         </button>
       </span>
     </div>
+
+    <p v-for="player in room.players" :key="player.username">
+      {{ player.username }}
+    </p>
   </div>
 </template>
 
@@ -51,8 +55,6 @@ export default {
   methods: {
     async handleSitDown(team) {
       // TODO update button text when player sits down
-      console.log(`[DEBUG] ${this.username} sat down on ${team}`);
-
       this.room.players.push({
         username: this.username,
         team,
@@ -67,7 +69,7 @@ export default {
       this.userExists = true;
     }
   },
-  mounted() {
+  created() {
     this.username = localStorage.getItem('username');
     this.userExists = !!localStorage.getItem('username');
   }

@@ -1,23 +1,5 @@
 import { updateRoom } from './api-calls.js';
 
-const id = window.location.search.slice(6);
-
-const dealCards = async room => {
-  for (let i = 0; i < 3; i++) {
-    for (let player of room.players) {
-      drawCard(room, player);
-    }
-  }
-
-  await updateRoom(id, room);
-};
-
-const drawCard = (room, player) => {
-  const random = Math.floor(Math.random() * room.deck.length);
-  player.hand.push(room.deck[random]);
-  room.deck.splice(random, 1);
-};
-
 const incrementTurn = async room => {
   room.turn++;
 

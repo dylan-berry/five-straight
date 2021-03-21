@@ -26,27 +26,56 @@ const server = app.listen(port, () => {
   console.log(`Server up on port ${port}.`);
 });
 
-// Sockets
+// Socket.IO
 const io = socketIO(server);
-const { isWinner } = require('./game-logic');
+const { readRoom, updateRoom } = require('./shared.js');
+const isWinner = require('./game-logic.js');
 
 io.on('connection', socket => {
   socket.on('join', room => {
     console.log(`[DEBUG] ${socket.id} joined room ${room._id}`);
+    socket.join(room._id);
   });
 
   socket.on('leave', (room, username) => {
     console.log(`[DEBUG] ${socket.id} left room ${room._id}`);
     socket.leave(room._id);
     io.to(room._id).emit('stand', room, username);
-    // TODO Remove player from seat
-    // TODO Remove player from room in database
-    // TODO Doesn't fire when refreshing room, only when navigating away
+  });
+
+  socket.on('disconnect', async () => {
+    const url = socket.request.headers.referer.split('/');
+    const id = url[url.length - 1];
+    console.log(`[DEBUG] ${socket.id} left room ${id}`);
+
+    if (id) {
+      try {
+        const room = await readRoom(id);
+        socket.leave(room._id);
+
+        const player = room.players.find(player => player.socketID === socket.id);
+
+        if (player) {
+          const username = player.username;
+          const players = room.players.filter(player => player.username !== username);
+
+          await updateRoom(room._id, { players });
+
+          io.to(room._id).emit('stand', room, username);
+        }
+      } catch (error) {
+        console.log('[ERROR]', error.message);
+      }
+    }
   });
 
   socket.on('sit', (room, username) => {
     console.log(`[DEBUG] ${username} has sat down in room ${room._id}`);
     io.to(room._id).emit('sit', room, username);
+  });
+
+  socket.on('start', async room => {
+    io.to(room._id).emit('start', room);
   });
 
   // OLD
@@ -95,14 +124,14 @@ io.on('connection', socket => {
     io.emit('client:restart');
   });
 
-  socket.on('server:start', async room => {
-    io.emit('client:start');
+  // socket.on('server:start', async room => {
+  //   io.emit('client:start');
 
-    for (let player of room.players) {
-      io.to(player.socketID).emit('client:turn', room);
-      io.to(player.socketID).emit('client:drawCard', player.hand);
-    }
-  });
+  //   for (let player of room.players) {
+  //     io.to(player.socketID).emit('client:turn', room);
+  //     io.to(player.socketID).emit('client:drawCard', player.hand);
+  //   }
+  // });
 
   socket.on('server:turn', room => {
     for (let player of room.players) {

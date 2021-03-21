@@ -3,7 +3,7 @@
     <h1 class="text-3xl my-5 text-center">Waiting for game to begin</h1>
     <Seats v-if="room" :room="room" @sit="sitDown" />
     <Board v-if="room" :room="room" :hand="hand" />
-    <Hand :room="room" :hand="hand" />
+    <Hand :room="room" :hand="hand" @start="startGame" />
     <Chat />
   </div>
 </template>
@@ -47,13 +47,18 @@ export default {
 
       try {
         await updateRoom(this.room._id, { players: this.room.players });
+        this.room = await readRoom(this.room._id);
         socket.emit('sit', this.room, localStorage.getItem('username'));
       } catch (error) {
         console.log('[ERROR]', error.message);
       }
+    },
+    startGame() {
+      socket.emit('start', this.room);
     }
   },
-  async mounted() {
+
+  async created() {
     try {
       this.room = await readRoom(this.id);
 
@@ -69,13 +74,19 @@ export default {
     localStorage.setItem('socketID', socket.id);
 
     socket.on('sit', (room, username) => {
-      this.room = room;
       console.log(`[DEBUG] ${username} has sat down`);
+      this.room = room;
     });
 
     socket.on('stand', (room, username) => {
-      this.room = room;
       console.log(`[DEBUG] ${username} has stood up`);
+      this.room = room;
+    });
+
+    socket.on('start', async room => {
+      console.log('[DEBUG] Game started');
+      this.room = room;
+      this.loadHand();
     });
   },
   async unmounted() {

@@ -51,7 +51,7 @@ export default {
       this.setup = true;
     }
   },
-  async mounted() {
+  async created() {
     this.loadRooms();
   }
 };

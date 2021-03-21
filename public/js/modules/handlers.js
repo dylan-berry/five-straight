@@ -20,15 +20,4 @@ const handleRestart = async () => {
   socket.emit('server:restart');
 };
 
-// Click 'Start Game' button
-const handleStart = async () => {
-  let room = await readRoom(id);
-  const player1 = room.players.find(player => player.playerNum === 1);
-  room.turnOwner = player1.username;
-
-  dealCards(room);
-
-  socket.emit('server:start', room);
-};
-
 export { handleBoardClick, handleDraw, handleForm, handleReset, handleRestart, handleSettings, handleSitDown, handleStart };

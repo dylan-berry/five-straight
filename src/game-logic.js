@@ -1,14 +1,3 @@
-const findMax = (value, hand) => {
-  let max = -1;
-  for (let card of hand) {
-    if (card.value > max && card.value <= value) {
-      max = card.value;
-    }
-  }
-
-  return max;
-};
-
 const countConsecutive = (board, index, direction, count = 1) => {
   const next = index + direction;
 
@@ -43,4 +32,4 @@ const isWinner = (board, value) => {
   }
 };
 
-module.exports = { findMax, isWinner };
+module.exports = { isWinner };
