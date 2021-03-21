@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 
+// Room
 const readRoom = async id => {
   try {
     const res = await fetch(`http://localhost:3000/rooms/${id}`);
@@ -25,4 +26,18 @@ const updateRoom = async (id, data) => {
   }
 };
 
-module.exports = { readRoom, updateRoom };
+// Player
+const readPlayer = async (roomID, socketID) => {
+  try {
+    const res = await fetch(`http://localhost:3000/rooms/${roomID}`);
+    const data = await res.json();
+
+    const player = data.players.find(player => player.socketID === socketID);
+
+    return player;
+  } catch (error) {
+    console.log(['[ERROR]', error.message]);
+  }
+};
+
+module.exports = { readRoom, updateRoom, readPlayer };

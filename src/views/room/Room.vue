@@ -2,7 +2,7 @@
   <div class="container mx-auto">
     <h1 class="text-3xl my-5 text-center">Waiting for game to begin</h1>
     <Seats v-if="room" :room="room" @sit="sitDown" />
-    <Board v-if="room" :room="room" :hand="hand" />
+    <Board v-if="room" :room="room" :hand="hand" @play="playPeg" />
     <Hand :room="room" :hand="hand" @start="startGame" />
     <Chat />
   </div>
@@ -42,6 +42,22 @@ export default {
         player => player.username === localStorage.getItem('username')
       ).hand;
     },
+    async playPeg(card, space, player) {
+      this.hand = this.hand.filter(c => c.value !== card);
+      this.room.turn++;
+
+      try {
+        await updateRoom(this.room._id, {
+          turn: this.room.turn,
+          board: this.room.board,
+          deck: this.room.deck,
+          players: this.room.players
+        });
+        socket.emit('play', card, space, player, this.room);
+      } catch (error) {
+        console.log('[ERROR]', error.message);
+      }
+    },
     async sitDown() {
       this.sitting = true;
 
@@ -72,6 +88,11 @@ export default {
     // Socket.IO
     socket.emit('join', this.room);
     localStorage.setItem('socketID', socket.id);
+
+    socket.on('play', (card, space, player, room) => {
+      console.log(`[DEBUG] ${player} played ${card} in ${space}`);
+      this.room = room;
+    });
 
     socket.on('sit', (room, username) => {
       console.log(`[DEBUG] ${username} has sat down`);

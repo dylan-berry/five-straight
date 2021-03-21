@@ -37,27 +37,30 @@ export default {
       }
 
       await updateRoom(this.room._id, {
+        gameState: this.room.gameState,
         deck: this.room.deck,
         players: this.room.players
       });
     },
     async drawCard() {
+      // TODO check if player's turn
       localStorage.setItem('turn', false);
 
       const random = Math.floor(Math.random() * this.room.deck.length);
       const card = this.room.deck[random];
       this.hand.push(card);
       this.room.deck.splice(random, 1);
+      this.room.turn++;
 
       await updateRoom(this.room._id, {
         deck: this.room.deck,
         players: this.room.players
       });
-      // TODO end player turn
       // socket.emit('server:draw', player, room);
     },
     async startGame() {
       this.room.gameState === 1;
+      console.log('[DEBUG] Gamestate: ', this.room.gameState);
       await this.dealCards();
       // TODO set player 1 (whoever goes first)
       // TODO set turnOwner

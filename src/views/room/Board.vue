@@ -17,19 +17,31 @@
 </template>
 
 <script>
+import { readPlayer } from '../../shared.js';
+
 export default {
   name: 'Board',
   props: ['hand', 'room'],
+  emits: ['play'],
   methods: {
-    placePeg(space) {
+    async placePeg(space) {
       // TODO Check if player's turn
+      localStorage.setItem('turn', false);
+
+      const player = await readPlayer(
+        this.room._id,
+        localStorage.getItem('socketID')
+      );
+
       const validMove = this.validMove(space);
+
       if (validMove) {
         console.log(`[DEBUG] ${validMove} placed in ${space.value}`);
         space.hasPeg = true;
-        space.team = 'bg-teal-600';
-        // TODO sync room info with server
-        // socket.emit('server:play', space, player, room);
+        space.team = player.team;
+        this.$emit('play', validMove, space.value, player.username);
+      } else {
+        localStorage.setItem('turn', true);
       }
     },
     validMove(space) {
