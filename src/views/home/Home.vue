@@ -37,7 +37,7 @@ export default {
   methods: {
     async loadRooms() {
       try {
-        const res = await fetch('http://localhost:3000/rooms');
+        const res = await fetch('/rooms');
         this.rooms = await res.json();
       } catch (error) {
         console.log('[ERROR]', error.message);

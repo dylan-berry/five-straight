@@ -41,6 +41,11 @@ const roomSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  logs: [
+    {
+      type: String
+    }
+  ],
   maxPlayers: {
     type: Number
   },

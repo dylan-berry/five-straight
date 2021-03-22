@@ -25,7 +25,7 @@
       @start="startGame"
       @restart="restartGame"
     />
-    <Chat />
+    <Logs :logs="room.logs" />
   </div>
 </template>
 
@@ -33,7 +33,7 @@
 import { io } from 'socket.io-client';
 
 import Board from './Board.vue';
-import Chat from './Chat.vue';
+import Logs from './Logs.vue';
 import Hand from './Hand.vue';
 import Seats from './Seats.vue';
 
@@ -45,8 +45,8 @@ export default {
   name: 'Room',
   components: {
     Board,
-    Chat,
     Hand,
+    Logs,
     Seats
   },
   props: ['id'],
@@ -229,29 +229,29 @@ export default {
     localStorage.setItem('socketID', socket.id);
 
     socket.on('play', (card, space, player, room) => {
-      console.log(`[DEBUG] ${player} played ${card} in ${space}`);
+      this.room.logs.push(`${player} played ${card} in ${space}`);
       this.room = room;
       this.checkTurn();
     });
 
     socket.on('draw', (room, username) => {
-      console.log(`[DEBUG] ${username} drew a card`);
+      this.room.logs.push(`${username} drew a card`);
       this.room = room;
       this.checkTurn();
     });
 
     socket.on('sit', (room, username) => {
-      console.log(`[DEBUG] ${username} has sat down`);
+      this.room.logs.push(`${username} has sat down`);
       this.room = room;
     });
 
     socket.on('stand', (room, username) => {
-      console.log(`[DEBUG] ${username} has stood up`);
+      this.room.logs.push(`${username} has stood up`);
       this.room = room;
     });
 
     socket.on('start', room => {
-      console.log('[DEBUG] Game started');
+      this.room.logs.push('Game started');
       this.room = room;
       this.loadHand();
       this.checkTurn();

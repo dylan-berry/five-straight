@@ -87,7 +87,7 @@ export default {
         };
 
         try {
-          await fetch('http://localhost:3000/rooms', {
+          await fetch('/rooms', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
