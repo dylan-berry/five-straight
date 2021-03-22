@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-wrap mx-auto w-full h-full absolute">
     <div
-      class="flex w-1/10 justify-center items-center cursor-pointer bg-gray-300 border-2 border-green-100 text-xl font-bold w-full"
+      class="flex w-1/10 justify-center items-center cursor-pointer bg-gray-300 border-2 border-white text-xl font-bold w-full"
       :class="space.team"
       v-for="space in room.board"
       :key="space.value"

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg p-5">
+  <div class="border rounded-lg p-5">
     <GameButtons
       :hand="hand"
       :room="room"
