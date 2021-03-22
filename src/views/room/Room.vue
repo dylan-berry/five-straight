@@ -134,7 +134,14 @@ export default {
       }
     },
     async restartGame() {
-      // TODO restart this bitch
+      try {
+        await updateRoom(this.room._id, {});
+        this.room = await readRoom(this.room._id);
+
+        this.startGame();
+      } catch (error) {
+        console.log('[ERROR]', error.message);
+      }
     },
     async dealCards() {
       for (let i = 0; i < 3; i++) {
@@ -196,6 +203,14 @@ export default {
           break;
         }
       }
+    },
+    checkTurn() {
+      if (this.room.turnOwner === localStorage.getItem('username')) {
+        this.turnText = 'Your turn';
+        this.turn = true;
+      } else {
+        this.turnText = `${this.room.turnOwner}'s turn`;
+      }
     }
   },
   async created() {
@@ -216,25 +231,13 @@ export default {
     socket.on('play', (card, space, player, room) => {
       console.log(`[DEBUG] ${player} played ${card} in ${space}`);
       this.room = room;
-
-      if (this.room.turnOwner === localStorage.getItem('username')) {
-        this.turnText = 'Your turn';
-        this.turn = true;
-      } else {
-        this.turnText = `${this.room.turnOwner}'s turn`;
-      }
+      this.checkTurn();
     });
 
     socket.on('draw', (room, username) => {
       console.log(`[DEBUG] ${username} drew a card`);
       this.room = room;
-
-      if (this.room.turnOwner === localStorage.getItem('username')) {
-        this.turnText = 'Your turn';
-        this.turn = true;
-      } else {
-        this.turnText = `${this.room.turnOwner}'s turn`;
-      }
+      this.checkTurn();
     });
 
     socket.on('sit', (room, username) => {
@@ -247,17 +250,11 @@ export default {
       this.room = room;
     });
 
-    socket.on('start', async room => {
+    socket.on('start', room => {
       console.log('[DEBUG] Game started');
       this.room = room;
       this.loadHand();
-
-      if (this.room.turnOwner === localStorage.getItem('username')) {
-        this.turnText = 'Your turn';
-        this.turn = true;
-      } else {
-        this.turnText = `${this.room.turnOwner}'s turn`;
-      }
+      this.checkTurn();
     });
   },
   async unmounted() {

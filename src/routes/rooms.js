@@ -2,6 +2,9 @@ const Room = require('../models/room');
 const express = require('express');
 const router = express.Router();
 
+const board = require('../assets/board.json');
+const deck = require('../assets/deck.json');
+
 // Read all rooms
 router.get('/', async (req, res) => {
   try {
@@ -42,16 +45,17 @@ router.patch('/:id', async (req, res) => {
   try {
     const room = await Room.findById(req.params.id);
 
-    for (let update of updates) {
-      if (update === 'restart') {
-        room.board = board;
-        room.deck = deck;
-        room.turn = 1;
-        room.turnOwner = null;
-        for (let player of room.players) {
-          player.hand = [];
-        }
-      } else {
+    if (updates.length === 0) {
+      room.board = board;
+      room.deck = deck;
+      room.turn = 1;
+      room.turnOwner = null;
+      for (let player of room.players) {
+        player.hand = [];
+      }
+    } else {
+      for (let update of updates) {
+        console.log(update);
         room[update] = req.body[update];
       }
     }

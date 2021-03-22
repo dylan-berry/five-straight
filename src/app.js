@@ -79,7 +79,7 @@ io.on('connection', socket => {
   });
 
   // 'Start Game' button is clicked
-  socket.on('start', async room => {
+  socket.on('start', room => {
     io.to(room._id).emit('start', room);
   });
 

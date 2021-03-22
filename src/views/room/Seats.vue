@@ -29,6 +29,7 @@
           v-for="index in room.maxPlayers / room.maxTeams"
           :key="index"
           @click="handleSitDown(team, index)"
+          :disabled="!userExists"
         >
           Sit Down
         </button>
