@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5 text-center">
+  <div class="text-center">
     <button
       v-if="room.gameState === 0"
       class="btn bg-blue-600"
@@ -16,7 +16,11 @@
     >
       Draw Card
     </button>
-    <button class="btn bg-blue-600" @click="$emit('restart')">
+    <button
+      v-if="room.gameState === 2"
+      class="btn bg-blue-600"
+      @click="$emit('restart')"
+    >
       Restart Game
     </button>
   </div>

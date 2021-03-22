@@ -1,31 +1,41 @@
 <template>
-  <div class="container mx-auto">
-    <h1 v-if="room.gameState === 0" class="text-3xl my-5 text-center">
-      Waiting for game to begin
-    </h1>
+  <div class="max-w-screen-lg mx-auto">
+    <div id="room-info">
+      <h1 v-if="room.gameState === 0" class="text-3xl my-5 text-center">
+        Waiting for game to begin
+      </h1>
 
-    <h2 v-if="turnText" class="text-xl text-center my-5">
-      {{ turnText }}
-    </h2>
+      <h2 v-if="turnText" class="text-xl text-center my-5">
+        {{ turnText }}
+      </h2>
+    </div>
 
-    <Seats v-if="room.gameState === 0" :room="room" @sit="sitDown" />
-    <Board
-      v-if="room"
-      :room="room"
-      :hand="hand"
-      :turn="turn"
-      @play="playPeg"
-      @turn="updateTurn"
-    />
-    <Hand
-      :room="room"
-      :hand="hand"
-      :turn="turn"
-      @draw="drawCard"
-      @start="startGame"
-      @restart="restartGame"
-    />
-    <Logs :logs="room.logs" />
+    <Seats id="seats" v-if="room.gameState === 0" :room="room" @sit="sitDown" />
+
+    <div class="grid grid-cols-3 gap-5">
+      <div class="game-board-container relative col-span-2">
+        <Board
+          v-if="room"
+          :room="room"
+          :hand="hand"
+          :turn="turn"
+          @play="playPeg"
+          @turn="updateTurn"
+        />
+      </div>
+
+      <div class="grid grid-rows-2 gap-5">
+        <Hand
+          :room="room"
+          :hand="hand"
+          :turn="turn"
+          @draw="drawCard"
+          @start="startGame"
+          @restart="restartGame"
+        />
+        <Logs :logs="logs" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -53,6 +63,7 @@ export default {
   data() {
     return {
       hand: [],
+      logs: [],
       room: {},
       sitting: false,
       turn: false,
@@ -229,29 +240,30 @@ export default {
     localStorage.setItem('socketID', socket.id);
 
     socket.on('play', (card, space, player, room) => {
-      this.room.logs.push(`${player} played ${card} in ${space}`);
+      this.logs.push(`${player} played ${card} in ${space}`);
       this.room = room;
       this.checkTurn();
     });
 
     socket.on('draw', (room, username) => {
-      this.room.logs.push(`${username} drew a card`);
+      this.logs.push(`${username} drew a card`);
       this.room = room;
       this.checkTurn();
     });
 
     socket.on('sit', (room, username) => {
-      this.room.logs.push(`${username} has sat down`);
+      this.logs.push(`${username} has sat down`);
       this.room = room;
     });
 
     socket.on('stand', (room, username) => {
-      this.room.logs.push(`${username} has stood up`);
+      this.logs.push(`${username} has stood up`);
       this.room = room;
     });
 
     socket.on('start', room => {
-      this.room.logs.push('Game started');
+      this.logs = [];
+      this.logs.push('Game started');
       this.room = room;
       this.loadHand();
       this.checkTurn();

@@ -55,7 +55,6 @@ router.patch('/:id', async (req, res) => {
       }
     } else {
       for (let update of updates) {
-        console.log(update);
         room[update] = req.body[update];
       }
     }

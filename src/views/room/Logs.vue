@@ -1,6 +1,9 @@
 <template>
-  <div>
-    <p v-for="log in logs" :key="log" class="italic">{{ log }}</p>
+  <div class="bg-white rounded-lg p-5">
+    <h2 class="text-xl mb-3">Game Log</h2>
+    <div class="overflow-y-auto">
+      <p v-for="log in logs" :key="log" class="italic">{{ log }}</p>
+    </div>
   </div>
 </template>
 

@@ -1,17 +1,13 @@
 <template>
-  <div class="md:w-2/3 mx-auto">
-    <div class="game-board-container">
-      <div class="flex flex-wrap mx-auto w-full h-full absolute">
-        <div
-          class="flex w-1/10 justify-center items-center cursor-pointer bg-gray-300 border-2 border-white text-xl font-bold w-full"
-          :class="space.team"
-          v-for="space in room.board"
-          :key="space.value"
-          @click="placePeg(space)"
-        >
-          {{ space.value }}
-        </div>
-      </div>
+  <div class="flex flex-wrap mx-auto w-full h-full absolute">
+    <div
+      class="flex w-1/10 justify-center items-center cursor-pointer bg-gray-300 border-2 border-green-100 text-xl font-bold w-full"
+      :class="space.team"
+      v-for="space in room.board"
+      :key="space.value"
+      @click="placePeg(space)"
+    >
+      {{ space.value }}
     </div>
   </div>
 </template>
