@@ -2,8 +2,10 @@
   <GameButtons
     :hand="hand"
     :room="room"
-    @drawCard="drawCard"
-    @startGame="startGame"
+    :turn="turn"
+    @draw="$emit('draw')"
+    @start="$emit('start')"
+    @restart="$emit('restart')"
   />
   <div class="flex my-5 w-1/2 mx-auto justify-around">
     <div
@@ -18,55 +20,12 @@
 
 <script>
 import GameButtons from './GameButtons.vue';
-import { updateRoom } from '../../shared.js';
 
 export default {
   name: 'Hand',
   components: { GameButtons },
-  props: ['hand', 'room'],
-  emits: ['start'],
-  methods: {
-    async dealCards() {
-      for (let i = 0; i < 3; i++) {
-        for (let player of this.room.players) {
-          const random = Math.floor(Math.random() * this.room.deck.length);
-          const card = this.room.deck[random];
-          player.hand.push(card);
-          this.room.deck.splice(random, 1);
-        }
-      }
-
-      await updateRoom(this.room._id, {
-        gameState: this.room.gameState,
-        deck: this.room.deck,
-        players: this.room.players
-      });
-    },
-    async drawCard() {
-      // TODO check if player's turn
-      localStorage.setItem('turn', false);
-
-      const random = Math.floor(Math.random() * this.room.deck.length);
-      const card = this.room.deck[random];
-      this.hand.push(card);
-      this.room.deck.splice(random, 1);
-      this.room.turn++;
-
-      await updateRoom(this.room._id, {
-        deck: this.room.deck,
-        players: this.room.players
-      });
-      // socket.emit('server:draw', player, room);
-    },
-    async startGame() {
-      this.room.gameState === 1;
-      console.log('[DEBUG] Gamestate: ', this.room.gameState);
-      await this.dealCards();
-      // TODO set player 1 (whoever goes first)
-      // TODO set turnOwner
-      this.$emit('start');
-    }
-  },
+  props: ['hand', 'room', 'turn'],
+  emits: ['draw', 'start', 'restart'],
   computed: {
     sortedHand() {
       return this.hand.sort((a, b) => a.value - b.value);

@@ -89,32 +89,8 @@ io.on('connection', socket => {
     io.to(room._id).emit('play', card, space, player, room);
   });
 
-  // OLD
-
-  socket.on('server:draw', (player, room) => {
-    io.emit('client:draw', player);
-    io.to(socket.id).emit('client:drawCard', player.hand);
-    io.to(socket.id).emit('client:incTurn', room);
-  });
-
-  socket.on('server:play', (space, player, room) => {
-    if (isWinner(room.board, space.value)) {
-      io.emit('client:winner', player.team);
-      //save game to archive
-    }
-  });
-
-  socket.on('server:reset', () => {
-    io.emit('client:reset');
-  });
-
-  socket.on('server:restart', () => {
-    io.emit('client:restart');
-  });
-
-  socket.on('server:turn', room => {
-    for (let player of room.players) {
-      io.to(player.socketID).emit('client:turn', room);
-    }
+  socket.on('draw', (room, player) => {
+    console.log(`[DEBUG] ${player} drew card`);
+    io.to(room._id).emit('draw', room, player);
   });
 });

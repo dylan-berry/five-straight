@@ -34,10 +34,6 @@
         </button>
       </span>
     </div>
-
-    <p v-for="player in room.players" :key="player.username">
-      {{ player.username }}
-    </p>
   </div>
 </template>
 

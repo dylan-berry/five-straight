@@ -21,27 +21,30 @@ import { readPlayer } from '../../shared.js';
 
 export default {
   name: 'Board',
-  props: ['hand', 'room'],
-  emits: ['play'],
+  props: ['hand', 'room', 'turn'],
+  emits: ['play', 'turn'],
   methods: {
     async placePeg(space) {
-      // TODO Check if player's turn
-      localStorage.setItem('turn', false);
+      if (this.turn) {
+        this.$emit('turn');
 
-      const player = await readPlayer(
-        this.room._id,
-        localStorage.getItem('socketID')
-      );
+        const player = await readPlayer(
+          this.room._id,
+          localStorage.getItem('socketID')
+        );
 
-      const validMove = this.validMove(space);
+        const validMove = this.validMove(space);
 
-      if (validMove) {
-        console.log(`[DEBUG] ${validMove} placed in ${space.value}`);
-        space.hasPeg = true;
-        space.team = player.team;
-        this.$emit('play', validMove, space.value, player.username);
+        if (validMove) {
+          console.log(`[DEBUG] ${validMove} placed in ${space.value}`);
+          space.hasPeg = true;
+          space.team = player.team;
+          this.$emit('play', validMove, space.value, player.username);
+        } else {
+          this.$emit('turn');
+        }
       } else {
-        localStorage.setItem('turn', true);
+        console.log(`[DEBUG] It's not your turn`);
       }
     },
     validMove(space) {

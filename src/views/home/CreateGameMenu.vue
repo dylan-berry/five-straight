@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-screen-sm mx-auto rounded bg-white p-5 my-5">
+  <div class="max-w-screen-sm mx-auto rounded bg-white border p-5 my-5">
     <h2 class="text-xl">Choose game settings</h2>
     <form class="grid grid-cols-2 gap-4 mt-5" @submit="createGame">
       <label for="maxPlayers" class="text-right"># of Players</label>
