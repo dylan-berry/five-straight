@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 // Room
 const readRoom = async id => {
   try {
-    const res = await fetch(`http://localhost:3000/rooms/${id}`);
+    const res = await fetch(`/rooms/${id}`);
     const data = await res.json();
 
     return data;
@@ -14,7 +14,7 @@ const readRoom = async id => {
 
 const updateRoom = async (id, data) => {
   try {
-    await fetch(`http://localhost:3000/rooms/${id}`, {
+    await fetch(`/rooms/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -29,7 +29,7 @@ const updateRoom = async (id, data) => {
 // Player
 const readPlayer = async (roomID, socketID) => {
   try {
-    const res = await fetch(`http://localhost:3000/rooms/${roomID}`);
+    const res = await fetch(`/rooms/${roomID}`);
     const data = await res.json();
 
     const player = data.players.find(player => player.socketID === socketID);
