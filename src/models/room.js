@@ -84,6 +84,16 @@ const roomSchema = new mongoose.Schema({
       }
     }
   ],
+  seats: [
+    {
+      text: {
+        type: String
+      },
+      team: {
+        type: String
+      }
+    }
+  ],
   teams: [
     {
       type: String

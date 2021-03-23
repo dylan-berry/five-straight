@@ -22,18 +22,16 @@
     <!-- TODO update sit down button text when player sits -->
     <!-- TODO disable other sit down buttons -->
     <div class="text-center">
-      <span v-for="team in room.teams" :key="team">
-        <button
-          class="btn m-1"
-          :class="[team, `btn-${index}`]"
-          v-for="index in room.maxPlayers / room.maxTeams"
-          :key="index"
-          @click="handleSitDown(team, index)"
-          :disabled="!userExists"
-        >
-          Sit Down
-        </button>
-      </span>
+      <button
+        class="btn m-1"
+        :class="seat.team"
+        v-for="(seat, index) in this.room.seats"
+        :key="index"
+        @click="handleSitDown(seat.team, index)"
+        :disabled="!userExists || sitting"
+      >
+        {{ this.room.seats[index].text }}
+      </button>
     </div>
   </div>
 </template>
@@ -41,7 +39,7 @@
 <script>
 export default {
   name: 'Seats',
-  props: ['room'],
+  props: ['room', 'sitting'],
   emits: ['sit'],
   data() {
     return {
@@ -50,8 +48,9 @@ export default {
     };
   },
   methods: {
-    async handleSitDown(team) {
-      // TODO update button text when player sits down
+    async handleSitDown(team, index) {
+      this.room.seats[index].text = this.username;
+
       this.room.players.push({
         username: this.username,
         team,

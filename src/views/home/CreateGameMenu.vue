@@ -78,12 +78,14 @@ export default {
         this.error = '';
 
         const teams = this.teams.find(team => team.length === this.maxTeams);
+        const seats = this.createSeats(teams);
 
         const data = {
           maxPlayers: this.maxPlayers,
           maxTeams: this.maxTeams,
           name: '',
-          teams
+          teams,
+          seats
         };
 
         try {
@@ -99,6 +101,17 @@ export default {
           console.log('[ERROR]', error.message);
         }
       }
+    },
+    createSeats(teams) {
+      const seats = [];
+
+      for (let team of teams) {
+        for (let i = 0; i < this.maxPlayers / this.maxTeams; i++) {
+          seats.push({ text: 'Sit Down', team });
+        }
+      }
+
+      return seats;
     },
     decMaxPlayers() {
       if (this.maxPlayers > 2) this.maxPlayers--;

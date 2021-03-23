@@ -10,7 +10,13 @@
       </h2>
     </div>
 
-    <Seats id="seats" v-if="room.gameState === 0" :room="room" @sit="sitDown" />
+    <Seats
+      id="seats"
+      v-if="room.gameState === 0"
+      :room="room"
+      :sitting="sitting"
+      @sit="sitDown"
+    />
 
     <div class="grid grid-cols-3 gap-5">
       <div class="game-board-container relative col-span-2">
@@ -119,7 +125,10 @@ export default {
       this.sitting = true;
 
       try {
-        await updateRoom(this.room._id, { players: this.room.players });
+        await updateRoom(this.room._id, {
+          players: this.room.players,
+          seats: this.room.seats
+        });
         this.room = await readRoom(this.room._id);
         socket.emit('sit', this.room, localStorage.getItem('username'));
       } catch (error) {
