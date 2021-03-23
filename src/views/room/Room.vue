@@ -282,10 +282,21 @@ export default {
     try {
       if (this.sitting) {
         this.room.players = this.room.players.filter(
-          player => player.username != localStorage.getItem('username')
+          player => player.username !== localStorage.getItem('username')
         );
 
-        await updateRoom(this.room._id, { players: this.room.players });
+        this.room.seats.forEach((seat, i) => {
+          if (seat.text === localStorage.getItem('username')) {
+            this.room.seats[i] = { text: 'Sit Down', team: seat.team };
+          }
+        });
+
+        console.log(this.room.seats);
+
+        await updateRoom(this.room._id, {
+          players: this.room.players,
+          seats: this.room.seats
+        });
       }
 
       socket.emit('leave', this.room, localStorage.getItem('username'));

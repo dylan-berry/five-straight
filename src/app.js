@@ -62,7 +62,13 @@ io.on('connection', socket => {
           const username = player.username;
           const players = room.players.filter(player => player.username !== username);
 
-          await updateRoom(room._id, { players });
+          room.seats.forEach((seat, i) => {
+            if (seat.text === username) {
+              room.seats[i] = { text: 'Sit Down', team: seat.team };
+            }
+          });
+
+          await updateRoom(room._id, { players, seats: room.seats });
 
           io.to(room._id).emit('stand', room, username);
         }

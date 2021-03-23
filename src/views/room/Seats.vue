@@ -28,7 +28,7 @@
         v-for="(seat, index) in this.room.seats"
         :key="index"
         @click="handleSitDown(seat.team, index)"
-        :disabled="!userExists || sitting"
+        :disabled="!userExists || sitting || seat.text !== 'Sit Down'"
       >
         {{ this.room.seats[index].text }}
       </button>

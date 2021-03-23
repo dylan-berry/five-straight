@@ -27,7 +27,6 @@ router.get('/:id', async (req, res) => {
 
 // Create room
 router.post('/', async (req, res) => {
-  console.log(req.body);
   let room = new Room(req.body);
 
   try {
