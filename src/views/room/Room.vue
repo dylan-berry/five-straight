@@ -246,6 +246,7 @@ export default {
 
     // Socket.IO
     socket.emit('join', this.room);
+    console.log(socket.id);
     localStorage.setItem('socketID', socket.id);
 
     socket.on('play', (card, space, player, room) => {
