@@ -5,8 +5,9 @@
     <!-- TODO set id param in router-link to room._id -->
     <router-link
       :to="{ name: 'Room', params: { id: room._id } }"
+      tag="button"
       class="btn bg-blue-600 text-sm block"
-      @click="joinGame"
+      :class="{ disabled: room.gameState !== 0 }"
     >
       Join Game
     </router-link>
@@ -20,3 +21,10 @@ export default {
   emits: ['join']
 };
 </script>
+
+<style scoped>
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+</style>
