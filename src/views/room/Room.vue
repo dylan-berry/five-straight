@@ -51,8 +51,6 @@ import Logs from './Logs.vue';
 import Hand from './Hand.vue';
 import Seats from './Seats.vue';
 
-import { readRoom, updateRoom } from '../../shared.js';
-
 import { io } from 'socket.io-client';
 let socket;
 
@@ -76,6 +74,29 @@ export default {
     };
   },
   methods: {
+    async readRoom(id) {
+      try {
+        const res = await fetch(`/rooms/${id}`);
+        const data = await res.json();
+
+        return data;
+      } catch (error) {
+        console.log(['[ERROR]', error.message]);
+      }
+    },
+    async updateRoom(id, data) {
+      try {
+        await fetch(`/rooms/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+      } catch (error) {
+        console.log(['[ERROR]', error.message]);
+      }
+    },
     loadHand() {
       this.hand = this.room.players.find(
         player => player.username === localStorage.getItem('username')
@@ -87,7 +108,7 @@ export default {
       this.updateTurnOwner();
 
       try {
-        await updateRoom(this.room._id, {
+        await this.updateRoom(this.room._id, {
           turn: this.room.turn,
           turnOwner: this.room.turnOwner,
           board: this.room.board,
@@ -110,7 +131,7 @@ export default {
         this.room.turn++;
         this.updateTurnOwner();
 
-        await updateRoom(this.room._id, {
+        await this.updateRoom(this.room._id, {
           turn: this.room.turn,
           turnOwner: this.room.turnOwner,
           deck: this.room.deck,
@@ -124,11 +145,11 @@ export default {
       this.sitting = true;
 
       try {
-        await updateRoom(this.room._id, {
+        await this.updateRoom(this.room._id, {
           players: this.room.players,
           seats: this.room.seats
         });
-        this.room = await readRoom(this.room._id);
+        this.room = await this.readRoom(this.room._id);
         socket.emit('sit', this.room, localStorage.getItem('username'));
       } catch (error) {
         console.log('[ERROR]', error.message);
@@ -142,7 +163,7 @@ export default {
       await this.dealCards();
 
       try {
-        updateRoom(this.room._id, {
+        this.updateRoom(this.room._id, {
           turnOwner: this.room.turnOwner,
           players: this.room.players,
           gameState: this.room.gameState
@@ -154,8 +175,8 @@ export default {
     },
     async restartGame() {
       try {
-        await updateRoom(this.room._id, {});
-        this.room = await readRoom(this.room._id);
+        await this.updateRoom(this.room._id, {});
+        this.room = await this.readRoom(this.room._id);
 
         this.startGame();
       } catch (error) {
@@ -172,7 +193,7 @@ export default {
         }
       }
 
-      await updateRoom(this.room._id, {
+      await this.updateRoom(this.room._id, {
         gameState: this.room.gameState,
         deck: this.room.deck,
         players: this.room.players
@@ -234,7 +255,7 @@ export default {
   },
   async created() {
     try {
-      this.room = await readRoom(this.id);
+      this.room = await this.readRoom(this.id);
 
       if (this.room.gameState === 1) {
         this.loadHand();
@@ -294,7 +315,7 @@ export default {
           }
         });
 
-        await updateRoom(this.room._id, {
+        await this.updateRoom(this.room._id, {
           players: this.room.players,
           seats: this.room.seats
         });

@@ -13,18 +13,30 @@
 </template>
 
 <script>
-import { readPlayer } from '../../shared.js';
-
 export default {
   name: 'Board',
   props: ['hand', 'room', 'turn'],
   emits: ['play', 'turn'],
   methods: {
+    async readPlayer(roomID, socketID) {
+      try {
+        const res = await fetch(`/rooms/${roomID}`);
+        const data = await res.json();
+
+        const player = data.players.find(
+          player => player.socketID === socketID
+        );
+
+        return player;
+      } catch (error) {
+        console.log(['[ERROR]', error.message]);
+      }
+    },
     async placePeg(space) {
       if (this.turn) {
         this.$emit('turn');
 
-        const player = await readPlayer(
+        const player = await this.readPlayer(
           this.room._id,
           localStorage.getItem('socketID')
         );

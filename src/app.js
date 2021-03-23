@@ -28,7 +28,7 @@ const server = app.listen(port, () => {
 
 // Socket.IO
 const io = socketIO(server);
-const { readRoom, updateRoom } = require('./shared.js');
+const { readRoom, updateRoom } = require('./api-calls.js');
 const isWinner = require('./game-logic.js');
 
 io.on('connection', socket => {
