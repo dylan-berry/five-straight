@@ -17,11 +17,6 @@
 export default {
   name: 'RoomInfo',
   props: ['room'],
-  emits: ['join'],
-  methods: {
-    joinGame() {
-      console.log('[DEBUG] Joining game');
-    }
-  }
+  emits: ['join']
 };
 </script>

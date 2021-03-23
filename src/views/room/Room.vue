@@ -54,7 +54,6 @@ import Seats from './Seats.vue';
 import { readRoom, updateRoom } from '../../shared.js';
 
 import { io } from 'socket.io-client';
-var socket = io();
 
 export default {
   name: 'Room',
@@ -244,8 +243,12 @@ export default {
     }
 
     // Socket.IO
-    socket.emit('join', this.room);
-    localStorage.setItem('socketID', socket.id);
+    const socket = io();
+
+    socket.on('connect', () => {
+      localStorage.setItem('socketID', socket.id);
+      socket.emit('join', this.room);
+    });
 
     socket.on('play', (card, space, player, room) => {
       this.logs.push(`${player} played ${card} in ${space}`);

@@ -1,12 +1,11 @@
-const fetch = require('node-fetch');
+const axios = require('axios');
+const host = process.env.HOST || 'http://localhost:3000';
 
 // Room
 const readRoom = async id => {
   try {
-    const res = await fetch(`/rooms/${id}`);
-    const data = await res.json();
-
-    return data;
+    const res = await axios.get(`${host}/rooms/${id}`);
+    return res.data;
   } catch (error) {
     console.log(['[ERROR]', error.message]);
   }
@@ -14,13 +13,7 @@ const readRoom = async id => {
 
 const updateRoom = async (id, data) => {
   try {
-    await fetch(`/rooms/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
+    await axios.patch(`${host}/rooms/${id}`, data);
   } catch (error) {
     console.log(['[ERROR]', error.message]);
   }
@@ -29,10 +22,8 @@ const updateRoom = async (id, data) => {
 // Player
 const readPlayer = async (roomID, socketID) => {
   try {
-    const res = await fetch(`/rooms/${roomID}`);
-    const data = await res.json();
-
-    const player = data.players.find(player => player.socketID === socketID);
+    const res = await axios.get(`${host}/rooms/${roomID}`);
+    const player = res.data.players.find(player => player.socketID === socketID);
 
     return player;
   } catch (error) {
