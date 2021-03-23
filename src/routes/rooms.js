@@ -4,9 +4,8 @@ const router = express.Router();
 
 const board = require('../assets/board.json');
 const deck = require('../assets/deck.json');
-const players = [];
 
-// Read rooms
+// Read all rooms
 router.get('/', async (req, res) => {
   try {
     const rooms = await Room.find({});
@@ -16,7 +15,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Read room
+// Read specifc room
 router.get('/:id', async (req, res) => {
   try {
     const room = await Room.findById(req.params.id);
@@ -28,7 +27,7 @@ router.get('/:id', async (req, res) => {
 
 // Create room
 router.post('/', async (req, res) => {
-  let room = new Room({ board, deck, players, name: null });
+  let room = new Room(req.body);
 
   try {
     await room.save();
@@ -46,34 +45,19 @@ router.patch('/:id', async (req, res) => {
   try {
     const room = await Room.findById(req.params.id);
 
-    for (let update of updates) {
-      if (update === 'restart') {
-        room.turn = 1;
-        room.board = board;
-        room.deck = deck;
-        room.turnOwner = null;
-        for (let player of room.players) {
-          player.hand = [];
-        }
-      } else {
+    if (updates.length === 0) {
+      room.board = board;
+      room.deck = deck;
+      room.turn = 1;
+      room.turnOwner = null;
+      for (let player of room.players) {
+        player.hand = [];
+      }
+    } else {
+      for (let update of updates) {
         room[update] = req.body[update];
       }
     }
-
-    await room.save();
-    res.status(200).send(room);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
-
-// Add player
-router.patch('/player/:id', async (req, res) => {
-  const { players } = req.body;
-
-  try {
-    const room = await Room.findById(req.params.id);
-    room.players = room.players.concat(players);
 
     await room.save();
     res.status(200).send(room);
@@ -88,27 +72,6 @@ router.delete('/:id', async (req, res) => {
     res.status(200).send(room);
   } catch (error) {
     res.status(400).send({ error });
-  }
-});
-
-// Remove player
-router.delete('/player/:id', async (req, res) => {
-  const { socketID } = req.body;
-  console.log(`User ${socketID} is being removed`);
-  const room = await Room.findById(req.params.id);
-  const player = room.players.filter(player => player.socketID === socketID);
-
-  if (player.length > 0) {
-    try {
-      room.players = room.players.filter(player => player.socketID !== socketID);
-
-      await room.save();
-      res.status(200).send(player[0]);
-    } catch (error) {
-      res.status(400).send({ error });
-    }
-  } else {
-    res.status(400).send({ error: 'Player does not exist.' });
   }
 });
 

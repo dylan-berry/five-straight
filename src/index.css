@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply text-white rounded px-3 py-1 disabled:opacity-50;
+  }
+  .game-board-container {
+    padding-bottom: 100%;
+  }
+}

@@ -3,112 +3,100 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const socketIO = require('socket.io');
-const fetch = require('node-fetch');
+const history = require('connect-history-api-fallback');
 
 require('./db/mongoose');
-const room = require('./routes/room');
-const user = require('./routes/user');
+const rooms = require('./routes/rooms.js');
 
 const port = process.env.PORT || 3000;
-const publicDirectoryPath = path.join(__dirname, '../public');
+const publicDirectoryPath = path.join(__dirname, '../dist');
 
 // Express
 const app = express();
-app.use(express.static(publicDirectoryPath));
 app.use(express.json());
 
 // Routes
-app.use('/rooms', room);
-app.use('/users', user);
+app.use('/rooms', rooms);
+
+app.use(history());
+app.use(express.static(publicDirectoryPath));
 
 // Start server
 const server = app.listen(port, () => {
   console.log(`Server up on port ${port}.`);
 });
 
-// Sockets
+// Socket.IO
 const io = socketIO(server);
-const { findMax } = require('./game-logic');
+const { readRoom, updateRoom } = require('./api-calls.js');
+const isWinner = require('./game-logic.js');
 
 io.on('connection', socket => {
-  console.log(`User ${socket.id} connected`);
+  // User joins a room
+  socket.on('join', room => {
+    console.log(`[DEBUG] ${socket.id} joined room ${room._id}`);
+    socket.join(room._id);
+  });
 
+  // User leaves room by navigating away (on component unmount)
+  socket.on('leave', (room, username) => {
+    console.log(`[DEBUG] ${socket.id} left room ${room._id}`);
+    socket.leave(room._id);
+    io.to(room._id).emit('stand', room, username);
+  });
+
+  // User leaves room by closing/refreshing
   socket.on('disconnect', async () => {
-    console.log(`User ${socket.id} disconnected`);
-    const roomId = socket.request.headers.referer.split('room=')[1];
-    const host = socket.request.headers.referer.split('/room')[0];
-    const url = `${host}/rooms/player/${roomId}`;
-    const json = JSON.stringify({ socketID: socket.id });
+    const url = socket.request.headers.referer.split('/');
+    const id = url[url.length - 1];
+    console.log(`[DEBUG] ${socket.id} left room ${id}`);
 
-    const res = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: json
-    });
+    if (id) {
+      try {
+        const room = await readRoom(id);
+        socket.leave(room._id);
 
-    const data = await res.json();
+        const player = room.players.find(player => player.socketID === socket.id);
 
-    io.emit('client:stand', data);
-  });
+        if (player) {
+          const username = player.username;
+          const players = room.players.filter(player => player.username !== username);
 
-  socket.on('server:draw', (player, room) => {
-    io.emit('client:draw', player);
-    io.to(socket.id).emit('client:drawCard', player.hand);
-    io.to(socket.id).emit('client:incTurn', room);
-  });
+          room.seats.forEach((seat, i) => {
+            if (seat.text === username) {
+              room.seats[i] = { text: 'Sit Down', team: seat.team };
+            }
+          });
 
-  socket.on('server:play', (space, player, room) => {
-    const playerIndex = room.players.findIndex(p => p._id === player._id);
-    const spaceIndex = room.board.findIndex(s => s.value === space.value);
-    const max = findMax(space.value, player.hand);
+          await updateRoom(room._id, { players, seats: room.seats });
 
-    if (space.hasPeg) {
-      io.to(socket.id).emit('client:error', 'Space already has a peg.');
-      io.to(socket.id).emit('client:resetTurn');
-    } else if (max === -1) {
-      io.to(socket.id).emit('client:error', `You don't have a card to play there.`);
-      io.to(socket.id).emit('client:resetTurn');
-    } else {
-      console.log(`Player is playing ${max} in ${space.value}`);
-
-      room.board[spaceIndex].hasPeg = true;
-      room.board[spaceIndex].team = player.team;
-      player.hand = player.hand.filter(card => card.value !== max);
-      room.players[playerIndex].hand = player.hand;
-
-      io.emit('client:playPeg', max, space.value, player, room);
-      io.to(socket.id).emit('client:playCard', player.hand, room);
+          io.to(room._id).emit('stand', room, username);
+        }
+      } catch (error) {
+        console.log('[ERROR]', error.message);
+      }
     }
   });
 
-  socket.on('server:reset', () => {
-    io.emit('client:reset');
+  // User sits down at game
+  socket.on('sit', (room, username) => {
+    console.log(`[DEBUG] ${username} has sat down in room ${room._id}`);
+    io.to(room._id).emit('sit', room, username);
   });
 
-  socket.on('server:restart', () => {
-    io.emit('client:restart');
+  // 'Start Game' button is clicked
+  socket.on('start', room => {
+    io.to(room._id).emit('start', room);
   });
 
-  socket.on('server:sit', async (room, username, playerNum, socketID) => {
-    console.log(`${username} has sat down at table ${room._id}`);
-    io.emit('client:sit', room, username, playerNum, socketID);
-    io.to(socket.id).emit('client:sit disable');
+  // User plays a peg in a valid space
+  socket.on('play', (card, space, player, room) => {
+    console.log(`[DEBUG] ${player} played ${card} in ${space}`);
+    io.to(room._id).emit('play', card, space, player, room);
   });
 
-  socket.on('server:start', async room => {
-    io.emit('client:start');
-
-    for (let player of room.players) {
-      io.to(player.socketID).emit('client:turn', room);
-      io.to(player.socketID).emit('client:drawCard', player.hand);
-    }
-  });
-
-  socket.on('server:turn', room => {
-    for (let player of room.players) {
-      io.to(player.socketID).emit('client:turn', room);
-    }
+  socket.on('draw', (room, player) => {
+    console.log(`[DEBUG] ${player} drew card`);
+    io.to(room._id).emit('draw', room, player);
   });
 });
