@@ -46,14 +46,15 @@
 </template>
 
 <script>
-import { io } from 'socket.io-client';
-
 import Board from './Board.vue';
 import Logs from './Logs.vue';
 import Hand from './Hand.vue';
 import Seats from './Seats.vue';
 
 import { readRoom, updateRoom } from '../../shared.js';
+
+import { io } from 'socket.io-client';
+var socket = io();
 
 export default {
   name: 'Room',
@@ -243,12 +244,8 @@ export default {
     }
 
     // Socket.IO
-    const socket = io();
-
-    socket.on('connect', () => {
-      socket.emit('join', this.room);
-      localStorage.setItem('socketID', socket.id);
-    });
+    socket.emit('join', this.room);
+    localStorage.setItem('socketID', socket.id);
 
     socket.on('play', (card, space, player, room) => {
       this.logs.push(`${player} played ${card} in ${space}`);
