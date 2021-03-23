@@ -1,5 +1,5 @@
 <template>
-  <div class="border rounded-lg p-5">
+  <div class="md:border rounded-lg p-5">
     <GameButtons
       :hand="hand"
       :room="room"
@@ -10,7 +10,7 @@
     />
     <div class="flex my-5 justify-around">
       <div
-        class="flex h-150px w-100px border border-gray-300 rounded-lg font-bold text-3xl justify-center items-center"
+        class="flex font-bold text-3xl justify-center items-center"
         v-for="card in sortedHand"
         :key="card.value"
       >

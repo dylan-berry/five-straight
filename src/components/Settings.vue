@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-black bg-opacity-50 w-full h-full fixed top-0"
+    class="bg-black bg-opacity-50 w-full h-full fixed top-0 left-0 z-10"
     @click.self="$emit('close')"
   >
     <div class="bg-white rounded p-8 mx-auto mt-48 w-96">

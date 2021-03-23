@@ -1,7 +1,9 @@
 <template>
-  <div class="border rounded-lg p-5">
-    <h2 class="text-xl mb-3">Game Log</h2>
-    <div class="overflow-y-auto">
+  <div class="row-span-2 border rounded-lg">
+    <div class="m-5">
+      <h2 class="text-xl">Game Log</h2>
+    </div>
+    <div class="mx-5 overflow-y-auto h-4/5">
       <p v-for="log in logs" :key="log" class="italic">{{ log }}</p>
     </div>
   </div>

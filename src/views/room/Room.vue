@@ -1,45 +1,51 @@
 <template>
-  <div class="max-w-screen-lg mx-auto">
-    <div id="room-info">
-      <h1 v-if="room.gameState === 0" class="text-3xl my-5 text-center">
-        Waiting for game to begin
-      </h1>
+  <div class="mx-5">
+    <div class="max-w-screen-lg mx-auto">
+      <div id="room-info">
+        <h1 v-if="room.gameState === 0" class="text-3xl my-5 text-center">
+          Waiting for game to begin
+        </h1>
 
-      <h2 v-if="turnText" class="text-xl text-center my-5">
-        {{ turnText }}
-      </h2>
-    </div>
-
-    <Seats
-      id="seats"
-      v-if="room.gameState === 0"
-      :room="room"
-      :sitting="sitting"
-      @sit="sitDown"
-    />
-
-    <div class="grid grid-cols-3 gap-5">
-      <div class="game-board-container relative col-span-2">
-        <Board
-          v-if="room"
-          :room="room"
-          :hand="hand"
-          :turn="turn"
-          @play="playPeg"
-          @turn="updateTurn"
-        />
+        <h2 v-if="turnText" class="text-xl text-center my-5">
+          {{ turnText }}
+        </h2>
       </div>
 
-      <div class="grid grid-rows-2 gap-5">
-        <Hand
-          :room="room"
-          :hand="hand"
-          :turn="turn"
-          @draw="drawCard"
-          @start="startGame"
-          @restart="restartGame"
-        />
-        <Logs :logs="logs" />
+      <Seats
+        id="seats"
+        v-if="room.gameState === 0"
+        :room="room"
+        :sitting="sitting"
+        @sit="sitDown"
+      />
+
+      <div v-if="mobile" class="mb-2 text-center italic">
+        <p>{{ this.logs[this.logs.length - 1] }}</p>
+      </div>
+
+      <div class="md:grid md:grid-cols-3 gap-5">
+        <div class="game-board-container relative col-span-2">
+          <Board
+            v-if="room"
+            :room="room"
+            :hand="hand"
+            :turn="turn"
+            @play="playPeg"
+            @turn="updateTurn"
+          />
+        </div>
+
+        <div class="md:grid md:grid-rows-1/3 gap-5">
+          <Hand
+            :room="room"
+            :hand="hand"
+            :turn="turn"
+            @draw="drawCard"
+            @start="startGame"
+            @restart="restartGame"
+          />
+          <Logs v-if="!mobile" :logs="logs" />
+        </div>
       </div>
     </div>
   </div>
@@ -70,7 +76,8 @@ export default {
       room: {},
       sitting: false,
       turn: false,
-      turnText: null
+      turnText: null,
+      mobile: false
     };
   },
   methods: {
@@ -254,6 +261,11 @@ export default {
     }
   },
   async created() {
+    this.mobile = window.innerWidth <= 768 ? true : false;
+    window.addEventListener('resize', () => {
+      this.mobile = window.innerWidth <= 768 ? true : false;
+    });
+
     try {
       this.room = await this.readRoom(this.id);
 

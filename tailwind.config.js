@@ -10,6 +10,9 @@ module.exports = {
         orange: colors.orange,
         gray: colors.trueGray
       },
+      gridTemplateRows: {
+        '1/3': 'repeat(3, minmax(0, 33%))'
+      },
       width: {
         '1/10': '10%',
         '100px': '100px'
@@ -21,7 +24,7 @@ module.exports = {
         sm: '640px',
         // => @media (min-width: 640px) { ... }
 
-        md: '768px',
+        md: '769px',
         // => @media (min-width: 768px) { ... }
 
         lg: '1024px',
