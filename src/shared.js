@@ -3,6 +3,7 @@ const host = process.env.HOST || 'http://localhost:3000';
 
 // Room
 const readRoom = async id => {
+  console.log(host);
   try {
     const res = await axios.get(`${host}/rooms/${id}`);
     return res.data;
