@@ -6,7 +6,6 @@
     <router-link
       :to="{ name: 'Room', params: { id: room._id } }"
       class="btn bg-blue-600 text-sm block"
-      :key="componentKey"
       @click="joinGame"
     >
       Join Game
@@ -19,18 +18,9 @@ export default {
   name: 'RoomInfo',
   props: ['room'],
   emits: ['join'],
-  data() {
-    return {
-      componentKey: 0
-    };
-  },
   methods: {
     joinGame() {
       console.log('[DEBUG] Joining game');
-      this.forceRerender();
-    },
-    forceRerender() {
-      this.componentKey += 1;
     }
   }
 };
