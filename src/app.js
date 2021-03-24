@@ -29,7 +29,6 @@ const server = app.listen(port, () => {
 // Socket.IO
 const io = socketIO(server);
 const { readRoom, updateRoom } = require('./api-calls.js');
-const isWinner = require('./game-logic.js');
 
 io.on('connection', socket => {
   // User joins a room
@@ -98,5 +97,10 @@ io.on('connection', socket => {
   socket.on('draw', (room, player) => {
     console.log(`[DEBUG] ${player} drew card`);
     io.to(room._id).emit('draw', room, player);
+  });
+
+  socket.on('win', (room, team) => {
+    console.log(`[DEBUG] ${team} wins!`);
+    io.to(room._id).emit('win', room, team);
   });
 });

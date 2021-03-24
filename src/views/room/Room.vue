@@ -6,7 +6,14 @@
           Waiting for game to begin
         </h1>
 
-        <h2 v-if="turnText" class="text-xl text-center my-5">
+        <h1 v-if="room.gameState === 2" class="text-3xl my-5 text-center">
+          {{ winner }} wins!
+        </h1>
+
+        <h2
+          v-if="turnText && room.gameState !== 2"
+          class="text-xl text-center my-5"
+        >
           {{ turnText }}
         </h2>
       </div>
@@ -32,6 +39,7 @@
             :turn="turn"
             @play="playPeg"
             @turn="updateTurn"
+            @win="onWin"
           />
         </div>
 
@@ -77,6 +85,7 @@ export default {
       sitting: false,
       turn: false,
       turnText: null,
+      winner: '',
       mobile: false
     };
   },
@@ -163,6 +172,8 @@ export default {
       }
     },
     async startGame() {
+      this.winner = '';
+      this.room.logs = [];
       this.room.teams = this.shuffleArray(this.room.teams);
       this.room.players = this.orderPlayers(this.sortPlayers());
       this.room.turnOwner = this.room.players[0].username;
@@ -258,6 +269,10 @@ export default {
       } else {
         this.turnText = `${this.room.turnOwner}'s turn`;
       }
+    },
+    onWin(team) {
+      this.room.gameState = 2;
+      socket.emit('win', this.room, team);
     }
   },
   async created() {
@@ -276,43 +291,51 @@ export default {
       console.log('[ERROR]', error.message);
     }
 
-    // Socket.IO
-    socket = io();
+    if (this.room) {
+      // Socket.IO
+      socket = io();
 
-    socket.on('connect', () => {
-      localStorage.setItem('socketID', socket.id);
-      socket.emit('join', this.room);
-    });
+      socket.on('connect', () => {
+        localStorage.setItem('socketID', socket.id);
+        socket.emit('join', this.room);
+      });
 
-    socket.on('play', (card, space, player, room) => {
-      this.logs.push(`${player} played ${card} in ${space}`);
-      this.room = room;
-      this.checkTurn();
-    });
+      socket.on('play', (card, space, player, room) => {
+        this.logs.push(`${player} played ${card} in ${space}`);
+        this.room = room;
+        this.checkTurn();
+      });
 
-    socket.on('draw', (room, username) => {
-      this.logs.push(`${username} drew a card`);
-      this.room = room;
-      this.checkTurn();
-    });
+      socket.on('draw', (room, username) => {
+        this.logs.push(`${username} drew a card`);
+        this.room = room;
+        this.checkTurn();
+      });
 
-    socket.on('sit', (room, username) => {
-      this.logs.push(`${username} has sat down`);
-      this.room = room;
-    });
+      socket.on('sit', (room, username) => {
+        this.logs.push(`${username} has sat down`);
+        this.room = room;
+      });
 
-    socket.on('stand', (room, username) => {
-      this.logs.push(`${username} has stood up`);
-      this.room = room;
-    });
+      socket.on('stand', (room, username) => {
+        this.logs.push(`${username} has stood up`);
+        this.room = room;
+      });
 
-    socket.on('start', room => {
-      this.logs = [];
-      this.logs.push('Game started');
-      this.room = room;
-      this.loadHand();
-      this.checkTurn();
-    });
+      socket.on('start', room => {
+        this.logs = [];
+        this.logs.push('Game started');
+        this.room = room;
+        this.loadHand();
+        this.checkTurn();
+      });
+
+      socket.on('win', (room, team) => {
+        this.room = room;
+        this.winner = team.split('-')[1].toUpperCase();
+        this.logs.push(`${this.winner} wins!`);
+      });
+    }
   },
   async unmounted() {
     try {

@@ -43,11 +43,14 @@ export default {
 
         const validMove = this.validMove(space);
 
-        if (validMove) {
-          console.log(`[DEBUG] ${validMove} placed in ${space.value}`);
+        if (validMove || validMove === 0) {
           space.hasPeg = true;
           space.team = player.team;
           this.$emit('play', validMove, space.value, player.username);
+
+          if (this.isWinner(space.value)) {
+            this.$emit('win', player.team);
+          }
         } else {
           this.$emit('turn');
         }
@@ -56,6 +59,11 @@ export default {
       }
     },
     validMove(space) {
+      if (this.hand.length === 0) {
+        console.log('[DEBUG] You have no cards');
+        return false;
+      }
+
       if (space.hasPeg) {
         console.log(`[DEBUG] Space ${space.value} already has peg`);
         return false;
@@ -77,6 +85,39 @@ export default {
         }
       }
       return max;
+    },
+    countConsecutive(index, direction, count = 1) {
+      const next = index + direction;
+
+      if (this.room.board[next]) {
+        if (this.room.board[next].team !== this.room.board[index].team) {
+          return count;
+        } else if (direction === 1 && next % 10 === 0) {
+          // If checking to the right and next value is in the first column
+          return count;
+        } else if (direction === -1 && next % 10 === 9) {
+          // If checking to the left and next value is in the last column
+          return count;
+        } else if (this.room.board[next].hasPeg) {
+          count++;
+          count = this.countConsecutive(next, direction, count);
+        }
+      }
+
+      return count;
+    },
+    isWinner(value) {
+      const index = this.room.board.findIndex(space => space.value === value);
+      const directions = [1, 9, 10, 11];
+
+      for (let direction of directions) {
+        const one = this.countConsecutive(index, direction);
+        const two = this.countConsecutive(index, direction * -1);
+        if (one + two > 5) {
+          return true;
+        }
+      }
+      return false;
     }
   }
 };

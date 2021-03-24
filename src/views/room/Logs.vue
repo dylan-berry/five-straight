@@ -3,7 +3,7 @@
     <div class="m-5">
       <h2 class="text-xl">Game Log</h2>
     </div>
-    <div class="mx-5 overflow-y-auto h-4/5">
+    <div class="mx-5 overflow-y-auto h-4/5 max-h-96">
       <p v-for="log in logs" :key="log" class="italic">{{ log }}</p>
     </div>
   </div>
