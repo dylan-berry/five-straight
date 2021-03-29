@@ -11,7 +11,7 @@
     <button
       v-if="room.gameState === 1"
       class="btn bg-blue-600"
-      :disabled="hand.length === 3 || !turn"
+      :disabled="hand.length > 2 || !turn"
       @click="$emit('draw')"
     >
       Draw Card

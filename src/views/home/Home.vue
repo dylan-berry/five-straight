@@ -3,7 +3,7 @@
     <h1 class="text-3xl mt-5">Welcome to Five Straight!</h1>
     <h2 class="text-xl mb-5">Join or create a game below.</h2>
     <button
-      v-if="rooms.length < 9"
+      v-if="rooms.length < 15"
       class="btn bg-blue-600 mb-5"
       @click="setupGame"
     >
@@ -13,7 +13,12 @@
     <CreateGameMenu v-if="setup" @roomCreated="roomCreated" />
 
     <div class="flex flex-wrap justify-center">
-      <RoomInfo v-for="room in rooms" :room="room" :key="room._id" />
+      <RoomInfo v-for="room in openRooms" :room="room" :key="room._id" />
+    </div>
+
+    <h2 v-if="closedRooms.length > 0" class="text-xl">In-progress games</h2>
+    <div class="flex flex-wrap justify-center">
+      <RoomInfo v-for="room in closedRooms" :room="room" :key="room._id" />
     </div>
   </div>
 </template>
@@ -33,6 +38,14 @@ export default {
       rooms: [],
       setup: false
     };
+  },
+  computed: {
+    openRooms() {
+      return this.rooms.filter(room => room.gameState === 0);
+    },
+    closedRooms() {
+      return this.rooms.filter(room => room.gameState === 1);
+    }
   },
   methods: {
     async loadRooms() {
