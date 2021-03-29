@@ -55,10 +55,6 @@ const roomSchema = new mongoose.Schema({
   name: {
     type: Number
   },
-  open: {
-    type: Boolean,
-    default: true
-  },
   players: [
     {
       username: {
@@ -106,6 +102,10 @@ const roomSchema = new mongoose.Schema({
   turnOwner: {
     type: String,
     default: null
+  },
+  winner: {
+    type: String,
+    default: null
   }
 });
 
@@ -123,5 +123,6 @@ roomSchema.pre('save', async function(next) {
 });
 
 const Room = mongoose.model('Room', roomSchema);
+const Archive = mongoose.model('Archive', roomSchema);
 
-module.exports = Room;
+module.exports = { Room, Archive };

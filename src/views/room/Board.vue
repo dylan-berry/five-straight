@@ -33,7 +33,7 @@ export default {
       }
     },
     async placePeg(space) {
-      if (this.turn) {
+      if (this.turn && this.room.gameState === 1) {
         this.$emit('turn');
 
         const player = await this.readPlayer(

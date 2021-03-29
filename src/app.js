@@ -7,6 +7,7 @@ const history = require('connect-history-api-fallback');
 
 require('./db/mongoose');
 const rooms = require('./routes/rooms.js');
+const archive = require('./routes/archive.js');
 
 const port = process.env.PORT || 3000;
 const publicDirectoryPath = path.join(__dirname, '../dist');
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // Routes
 app.use('/rooms', rooms);
+app.use('/archive', archive);
 
 app.use(history());
 app.use(express.static(publicDirectoryPath));
@@ -99,8 +101,8 @@ io.on('connection', socket => {
     io.to(room._id).emit('draw', room, player);
   });
 
-  socket.on('win', (room, team) => {
-    console.log(`[DEBUG] ${team} wins!`);
-    io.to(room._id).emit('win', room, team);
+  socket.on('win', room => {
+    console.log(`[DEBUG] ${room.winner} wins!`);
+    io.to(room._id).emit('win', room);
   });
 });

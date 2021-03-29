@@ -7,7 +7,7 @@
         </h1>
 
         <h1 v-if="room.gameState === 2" class="text-3xl my-5 text-center">
-          {{ winner }} wins!
+          {{ room.winner.split('-')[1].toUpperCase() }} wins!
         </h1>
 
         <h2
@@ -85,7 +85,6 @@ export default {
       sitting: false,
       turn: false,
       turnText: null,
-      winner: '',
       mobile: false
     };
   },
@@ -104,6 +103,28 @@ export default {
       try {
         await fetch(`/rooms/${id}`, {
           method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+      } catch (error) {
+        console.log(['[ERROR]', error.message]);
+      }
+    },
+    async archiveGame() {
+      const data = {
+        date: this.room.date,
+        teams: this.room.teams,
+        board: this.room.board,
+        deck: this.room.deck,
+        players: this.room.players,
+        winner: this.room.winner
+      };
+
+      try {
+        await fetch(`/archive`, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -172,8 +193,8 @@ export default {
       }
     },
     async startGame() {
-      this.winner = '';
-      this.room.logs = [];
+      this.room.winner = '';
+      this.logs = [];
       this.room.teams = this.shuffleArray(this.room.teams);
       this.room.players = this.orderPlayers(this.sortPlayers());
       this.room.turnOwner = this.room.players[0].username;
@@ -272,7 +293,9 @@ export default {
     },
     onWin(team) {
       this.room.gameState = 2;
-      socket.emit('win', this.room, team);
+      this.room.winner = team;
+      this.archiveGame();
+      socket.emit('win', this.room);
     }
   },
   async created() {
@@ -330,10 +353,8 @@ export default {
         this.checkTurn();
       });
 
-      socket.on('win', (room, team) => {
+      socket.on('win', room => {
         this.room = room;
-        this.winner = team.split('-')[1].toUpperCase();
-        this.logs.push(`${this.winner} wins!`);
       });
     }
   },
