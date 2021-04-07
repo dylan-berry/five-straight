@@ -25,7 +25,7 @@
       <button
         class="btn m-1"
         :class="seat.team"
-        v-for="(seat, index) in this.room.seats"
+        v-for="(seat, index) of this.room.seats"
         :key="index"
         @click="handleSitDown(seat.team, index)"
         :disabled="!userExists || sitting || seat.text !== 'Sit Down'"

@@ -48,6 +48,7 @@ router.patch('/:id', async (req, res) => {
     if (updates.length === 0) {
       room.board = board;
       room.deck = deck;
+      room.gameState = 0;
       room.turn = 1;
       room.turnOwner = null;
       for (let player of room.players) {

@@ -3,7 +3,7 @@
     <div
       class="flex w-1/10 justify-center items-center cursor-pointer bg-gray-300 border-2 border-white text-xl font-bold w-full"
       :class="space.team"
-      v-for="space in room.board"
+      v-for="space of room.board"
       :key="space.value"
       @click="placePeg(space)"
     >

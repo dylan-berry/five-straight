@@ -13,12 +13,12 @@
     <CreateGameMenu v-if="setup" @roomCreated="roomCreated" />
 
     <div class="flex flex-wrap justify-center">
-      <RoomInfo v-for="room in openRooms" :room="room" :key="room._id" />
+      <RoomInfo v-for="room of openRooms" :room="room" :key="room._id" />
     </div>
 
     <h2 v-if="closedRooms.length > 0" class="text-xl">In-progress games</h2>
     <div class="flex flex-wrap justify-center">
-      <RoomInfo v-for="room in closedRooms" :room="room" :key="room._id" />
+      <RoomInfo v-for="room of closedRooms" :room="room" :key="room._id" />
     </div>
   </div>
 </template>

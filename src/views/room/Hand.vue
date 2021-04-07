@@ -11,7 +11,7 @@
     <div class="flex my-5 justify-around">
       <div
         class="flex font-bold text-3xl justify-center items-center"
-        v-for="card in sortedHand"
+        v-for="card of sortedHand"
         :key="card.value"
       >
         {{ card.value }}
