@@ -6,8 +6,11 @@
           Waiting for game to begin
         </h1>
 
-        <h1 v-if="room.gameState === 2" class="text-3xl my-5 text-center">
-          {{ room.winner.split('-')[1].toUpperCase() }} wins!
+        <h1
+          v-if="room.gameState === 2"
+          class="text-3xl my-5 text-center capitalize"
+        >
+          {{ room.winner.split('-')[1] }} wins!
         </h1>
 
         <h2
@@ -30,6 +33,11 @@
         <p>{{ this.logs[this.logs.length - 1] }}</p>
       </div>
 
+      <div v-if="team" class="flex items-center capitalize">
+        <div class="inline-block mr-1 w-5 h-5" :class="team"></div>
+        Team {{ team.split('-')[1] }}
+      </div>
+
       <div class="md:grid md:grid-cols-3 gap-5">
         <div class="game-board-container relative col-span-2">
           <Board
@@ -38,7 +46,7 @@
             :hand="hand"
             :turn="turn"
             @play="playPeg"
-            @turn="updateTurn"
+            @turn="toggleTurn"
             @win="onWin"
           />
         </div>
@@ -81,12 +89,16 @@ export default {
     return {
       hand: [],
       logs: [],
+      team: null,
       room: {},
       sitting: false,
       turn: false,
       turnText: null,
       mobile: false
     };
+  },
+  computed: {
+    prettyTeam() {}
   },
   methods: {
     async readRoom(id) {
@@ -187,25 +199,36 @@ export default {
           seats: this.room.seats
         });
         this.room = await this.readRoom(this.room._id);
+
+        // Set player team
+        for (let player of this.room.players) {
+          if (player.username === localStorage.getItem('username')) {
+            this.team = player.team;
+          }
+        }
+
         socket.emit('sit', this.room, localStorage.getItem('username'));
       } catch (error) {
         console.log('[ERROR]', error.message);
       }
     },
     async startGame() {
-      this.room.winner = '';
-      this.logs = [];
-      this.room.teams = this.shuffleArray(this.room.teams);
-      this.room.players = this.orderPlayers(this.sortPlayers());
+      this.room.teams = this.shuffleArray(this.room.teams); //Randomize team order so teams
+      this.room.players = this.shuffleArray(this.room.players); //Randomize player 1
+      this.room.players = this.orderPlayers(this.sortPlayers()); //Sort players into teams and then set player order
       this.room.turnOwner = this.room.players[0].username;
       this.room.gameState = 1;
+      this.room.winner = null;
       await this.dealCards();
 
       try {
-        this.updateRoom(this.room._id, {
-          turnOwner: this.room.turnOwner,
+        await this.updateRoom(this.room._id, {
+          date: Date(),
+          deck: this.room.deck,
           players: this.room.players,
-          gameState: this.room.gameState
+          turnOwner: this.room.turnOwner,
+          gameState: this.room.gameState,
+          winner: this.room.winner
         });
         socket.emit('start', this.room);
       } catch (error) {
@@ -231,13 +254,8 @@ export default {
           this.room.deck.splice(random, 1);
         }
       }
-
-      await this.updateRoom(this.room._id, {
-        gameState: this.room.gameState,
-        deck: this.room.deck,
-        players: this.room.players
-      });
     },
+    // Sort players according to team
     sortPlayers() {
       let sorted = [];
       for (let team of this.room.teams) {
@@ -248,7 +266,8 @@ export default {
 
       return sorted;
     },
-    orderPlayers() {
+    // Set player order so team members aren't playing after one another
+    orderPlayers(players) {
       let ordered = [];
       for (let i = 0; i < this.room.maxPlayers / this.room.maxTeams; i++) {
         for (
@@ -256,7 +275,7 @@ export default {
           j < this.room.maxPlayers;
           j += this.room.maxPlayers / this.room.maxTeams
         ) {
-          ordered.push(this.room.players[j]);
+          ordered.push(players[j]);
         }
       }
 
@@ -269,14 +288,14 @@ export default {
       }
       return array;
     },
-    updateTurn() {
+    toggleTurn() {
       this.turn = !this.turn;
     },
     updateTurnOwner() {
       for (let i = 0; i < this.room.players.length; i++) {
         if (this.room.players[i].username === this.room.turnOwner) {
           this.room.turnOwner =
-            this.room.players.length === i + 1
+            this.room.players.length === i + 1 // Check if last player in array
               ? this.room.players[0].username
               : this.room.players[i + 1].username;
           break;
@@ -310,11 +329,7 @@ export default {
       if (this.room.gameState === 1) {
         this.loadHand();
       }
-    } catch (error) {
-      console.log('[ERROR]', error.message);
-    }
 
-    if (this.room) {
       // Socket.IO
       socket = io();
 
@@ -356,6 +371,8 @@ export default {
       socket.on('win', room => {
         this.room = room;
       });
+    } catch (error) {
+      console.log('[ERROR]', error.message);
     }
   },
   async unmounted() {

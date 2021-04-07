@@ -3,6 +3,7 @@ node_modules
 /dist
 TODO.txt
 .env
+test.js
 
 # local env files
 .env.local
