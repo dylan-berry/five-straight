@@ -13,7 +13,17 @@ const readRoom = async id => {
 
 const updateRoom = async (id, data) => {
   try {
-    await axios.patch(`${host}/rooms/${id}`, data);
+    const res = await axios.patch(`${host}/rooms/${id}`, data);
+    return res.data;
+  } catch (error) {
+    console.log(['[ERROR]', error.message]);
+  }
+};
+
+const deleteRoom = async id => {
+  try {
+    const res = await axios.delete(`${host}/rooms/${id}`);
+    return res.data;
   } catch (error) {
     console.log(['[ERROR]', error.message]);
   }
@@ -31,4 +41,4 @@ const readPlayer = async (roomID, socketID) => {
   }
 };
 
-module.exports = { readRoom, updateRoom, readPlayer };
+module.exports = { readRoom, updateRoom, deleteRoom, readPlayer };
