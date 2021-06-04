@@ -28,6 +28,10 @@ const server = app.listen(port, () => {
   console.log(`Server up on port ${port}.`);
 });
 
+// Node cron
+const cron = require('./cron');
+cron.schedule.start();
+
 // Socket.IO
 const io = socketIO(server);
 const { readRoom, updateRoom } = require('./api-calls.js');
